@@ -18,6 +18,7 @@ class LandingScreen extends React.Component {
             <Image style={styles.background} source={require('../assets/landingBG.jpg')} />
           </View>
           <View style={styles.titleContainer}>
+            <Image source={require('../assets/whatsartIcon.png')} style={{ width: 100, height: 100, marginBottom: -10 }} />
             <Animatable.Text animation="fadeInDown" iterationCount={1} delay={0}
               style={styles.title}>WhatsArt</Animatable.Text>
           </View>
@@ -80,7 +81,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   caption: {
-    fontSize: 20,
+    fontSize: 16,
+    fontFamily: 'Verdana',
     color: 'white',
   }
 });
