@@ -7,10 +7,12 @@ const userSchema = new Schema({
 });
 
 const ArtworkSchema = new Schema({
-  name: String,
-  date: String,
-  description: String,
-  url: String,//is this what we want?
+  artist: String,
+  dateViewed: String,
+  dateCreated: String,
+  medium: String,
+  title: String,
+  url: String//is this how we want to store images?
 });
 
 const User = mongoose.model("User", userSchema);
