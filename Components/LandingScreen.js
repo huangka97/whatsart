@@ -1,28 +1,88 @@
 import React from 'react';
-import { StyleSheet, Text, View, Image } from 'react-native';
+import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native';
+import Ripple from 'react-native-material-ripple';
+import * as Animatable from 'react-native-animatable';
+import LottieView from 'lottie-react-native';
 
 class LandingScreen extends React.Component {
   static navigationOptions = {
     header: null
   };
+
   render() {
     return (
-      <View style={styles.container}>
-        <Text>WhatsArt</Text>
-        <Image
-          source={require('../assets/landingBG.jpg')}
-        />
-      </View>
+      <Ripple style={styles.backgroundContainer} rippleDuration={800} rippleFades rippleSize={400}
+        onPressOut={()=>setTimeout(()=>this.props.navigation.navigate("Camera"), 500)}>
+        <View style={styles.main}>
+          <View style={styles.backgroundContainer}>
+            <Image style={styles.background} source={require('../assets/landingBG.jpg')} />
+          </View>
+          <View style={styles.titleContainer}>
+            <Animatable.Text animation="fadeInDown" iterationCount={1} delay={0}
+              style={styles.title}>WhatsArt</Animatable.Text>
+          </View>
+          <View style={styles.imageContainer}>
+            <Image source={require('../assets/canvas.png')} style={{ width: 300, height: 300}} />
+            <LottieView
+              source={require('../assets/searchAnimation.json')}
+              speed={0.6}
+              autoPlay
+              loop
+              style={{ marginBottom: 40}}
+            />
+          </View>
+          <View style={styles.captionContainer}>
+            <Animatable.Text animation="pulse" iterationCount="infinite" direction="alternate" delay={0}
+              style={styles.caption}>Touch to enter.</Animatable.Text>
+          </View>
+        </View>
+      </Ripple>
     );
   }
 }
 
 const styles = StyleSheet.create({
-  container: {
+  main: {
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
   },
+  backgroundContainer: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    width: '100%',
+    height: '100%',
+  },
+  background: {
+    resizeMode: 'cover'
+  },
+  titleContainer: {
+    //borderWidth: 10,
+    flex: 3,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  title: {
+    fontSize: 60,
+    fontFamily: 'Marker Felt',
+    color: 'white',
+  },
+  imageContainer: {
+    //borderWidth: 5,
+    //borderColor:'blue'
+    flex: 3,
+    alignItems: 'center',
+  },
+  captionContainer: {
+    //borderWidth: 10,
+    //borderColor: 'red',
+    flex: 2,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  caption: {
+    fontSize: 20,
+    color: 'white',
+  }
 });
 
 export default LandingScreen;
