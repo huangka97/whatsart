@@ -1,7 +1,7 @@
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { createStackNavigator } from 'react-navigation';
-import { zoomIn, flipX } from 'react-navigation-transitions';
+import { zoomIn, flipY } from 'react-navigation-transitions';
 import { Ionicons } from '@expo/vector-icons';
 
 // All Screen Components
@@ -29,11 +29,10 @@ const WhatsArt = createStackNavigator(
     },
     transitionConfig: (prop) => {
       const routeName = prop.scene.route.routeName;
-      console.log(routeName);
       if (routeName === 'Camera') {
         return zoomIn(600);
       } else {
-        return flipX(4000);
+        return flipY(4000);
       }
     }
   }

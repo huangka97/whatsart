@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, View, Image, TouchableOpacity, Platform } from 'react-native';
 import Ripple from 'react-native-material-ripple';
 import * as Animatable from 'react-native-animatable';
 import LottieView from 'lottie-react-native';
@@ -64,7 +64,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 60,
-    fontFamily: 'Marker Felt',
+    fontFamily: Platform.OS === 'ios' ? 'Marker Felt' : 'sans-serif',
     color: 'white',
   },
   imageContainer: {
@@ -82,7 +82,7 @@ const styles = StyleSheet.create({
   },
   caption: {
     fontSize: 16,
-    fontFamily: 'Verdana',
+    fontFamily: Platform.OS === 'ios' ? 'Verdana' : 'sans-serif',
     color: 'white',
   }
 });
