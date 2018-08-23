@@ -71,10 +71,6 @@ app.use(passport.session());
 
 
 
-app.use('/', routes(oauth2Client));//not sure what this does
-
-
-
 // Creates a client
 const client = new vision.ImageAnnotatorClient();
 
