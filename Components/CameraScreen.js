@@ -24,19 +24,21 @@ export default class CameraExample extends React.Component {
     this.setState({ hasCameraPermission: status === 'granted' });
   }
 
-  async checkforLogos(uri){
+  async checkforLogos(base64){
     return await
     fetch(config.googleCloud.api+config.googleCloud.apiKey,{
       method:'POST',
+
       body:JSON.stringify({
         "requests":[
           {
             "image":{
-              "content":uri
+              "content":base64
             },
             "features":[
               {
-                "type":"LABEL_DETECTION"
+                "type":"LOGO_DETECTION",
+                maxResults:1
               }
             ]
           }
@@ -45,6 +47,7 @@ export default class CameraExample extends React.Component {
     }).then((response)=>{
       console.log("SUCCESS");
       return response.json();
+
     }).catch((err)=>{
       console.log("You done goofed fam",err);
     })
@@ -53,12 +56,10 @@ export default class CameraExample extends React.Component {
 
   snap = async () => {
     if (this.camera) {
-      this.camera.takePictureAsync()
-      .then(async ({ uri })=> {
-
-        console.log(uri);
+      this.camera.takePictureAsync({base64: true})
+      .then(async ({ uri, base64 })=> {
         this.setState({ currentImg: uri });
-        this.checkforLogos(uri)
+        this.checkforLogos(base64)
         .then((searchResult) => console.log(searchResult))
       });
     }
