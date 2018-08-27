@@ -2,7 +2,9 @@ import React from 'react';
 import { StyleSheet, Text, View, TouchableOpacity, Image, Dimensions } from 'react-native';
 import { Camera, Permissions } from 'expo';
 import Ripple from 'react-native-material-ripple';
-
+ // vision from '@google-cloud/vision';
+// import vision from '@google-cloud/vision';
+import config from "../config";
 export default class CameraExample extends React.Component {
   static navigationOptions = {
     header: null
@@ -22,15 +24,49 @@ export default class CameraExample extends React.Component {
     this.setState({ hasCameraPermission: status === 'granted' });
   }
 
+  async checkforLogos(uri){
+    return await
+    fetch(config.googleCloud.api+config.googleCloud.apiKey,{
+      method:'POST',
+      body:JSON.stringify({
+        "requests":[
+          {
+            "image":{
+              "content":uri
+            },
+            "features":[
+              {
+                "type":"LABEL_DETECTION"
+              }
+            ]
+          }
+        ]
+      })
+    }).then((response)=>{
+      console.log("SUCCESS");
+      return response.json();
+    }).catch((err)=>{
+      console.log("You done goofed fam",err);
+    })
+
+  }
+
   snap = async () => {
     if (this.camera) {
       this.camera.takePictureAsync()
-      .then(({ uri })=> {
+      .then(async ({ uri })=> {
+
         console.log(uri);
         this.setState({ currentImg: uri });
+        this.checkforLogos(uri)
+        .then((searchResult) => console.log(searchResult))
       });
     }
   };
+
+  //API CALL TO GOOGLE Cloud
+
+
 
   render() {
     const { hasCameraPermission } = this.state;
