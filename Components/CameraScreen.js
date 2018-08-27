@@ -46,10 +46,10 @@ export default class CameraExample extends React.Component {
         <View style={styles.main}>
           <Camera style={styles.main} type={this.state.type} ref={ref => {this.camera = ref;}}>
             <View style={styles.cameraViewContainer}>
-              <View style={{ flexDirection:'row', borderWidth: 5, borderColor: 'green' }}>
-                <Ripple><Image style={{ width: 50, height: 50, borderWidth: 5, borderColor: 'blue' }} source={require('../assets/guest.png')} /></Ripple>
+              <View style={{ flexDirection:'row', borderWidth: 5 }}>
+                <Ripple><Image style={{ width: 50, height: 50, borderWidth: 5 }} source={require('../assets/guest.png')} /></Ripple>
               </View>
-              <View style={{ flexDirection: 'row', justifyContent: 'space-between', borderWidth: 5, borderColor: 'red' }}>
+              <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
                 <Ripple><Image style={{ width: 50, height: 50 }} source={require('../assets/collections.png')} /></Ripple>
                 <Ripple onPress={this.snap}>
                   <Image style={{ width: 50, height: 50 }} source={require('../assets/camera.png')} />
