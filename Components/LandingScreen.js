@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Text, View, Image, TouchableOpacity, Platform } from 'react-native';
+import { StyleSheet, Text, View, Image, Platform } from 'react-native';
 import Ripple from 'react-native-material-ripple';
 import * as Animatable from 'react-native-animatable';
 import LottieView from 'lottie-react-native';
@@ -18,12 +18,12 @@ class LandingScreen extends React.Component {
             <Image style={styles.background} source={require('../assets/landingBG.jpg')} />
           </View>
           <View style={styles.titleContainer}>
-            <Image source={require('../assets/whatsartIcon.png')} style={{ width: 100, height: 100, marginBottom: -10 }} />
+            <Image source={require('../assets/whatsartIcon.png')} style={styles.titleIcon} />
             <Animatable.Text animation="fadeInDown" iterationCount={1} delay={0}
               style={styles.title}>WhatsArt</Animatable.Text>
           </View>
           <View style={styles.imageContainer}>
-            <Image source={require('../assets/canvas.png')} style={{ width: 300, height: 300}} />
+            <Image source={require('../assets/canvas.png')} style={styles.canvasImage} />
             <LottieView
               source={require('../assets/searchAnimation.json')}
               speed={0.6}
@@ -58,9 +58,15 @@ const styles = StyleSheet.create({
   },
   titleContainer: {
     //borderWidth: 10,
+    //borderColor: 'green',
     flex: 3,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  titleIcon: {
+    width: 100,
+    height: 100,
+    marginBottom: -10,
   },
   title: {
     fontSize: 60,
@@ -72,6 +78,10 @@ const styles = StyleSheet.create({
     //borderColor:'blue'
     flex: 3,
     alignItems: 'center',
+  },
+  canvasImage: {
+    width: 300,
+    height: 300,
   },
   captionContainer: {
     //borderWidth: 10,

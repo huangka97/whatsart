@@ -1,10 +1,13 @@
 import React from 'react';
-import { StyleSheet, Text, View, TouchableOpacity, Image, Dimensions } from 'react-native';
+import { StyleSheet, Text, View, Image } from 'react-native';
 import { Camera, Permissions } from 'expo';
 import Ripple from 'react-native-material-ripple';
 
-export default class CameraExample extends React.Component {
-  static navigationOptions = {
+// To preview the image taken before deciding to process it
+import CameraScreenPreview from './CameraScreenPreview.js';
+
+class CameraScreen extends React.Component {
+  static navigationOptions = { // Don't display header for camera.
     header: null
   };
   constructor(props) {
@@ -16,12 +19,13 @@ export default class CameraExample extends React.Component {
     };
   }
 
-  // Wait for User to give Permissions
+  // Wait for User to Give Permissions
   async componentWillMount() {
     const { status } = await Permissions.askAsync(Permissions.CAMERA);
     this.setState({ hasCameraPermission: status === 'granted' });
   }
 
+  // Take a picture and set the current image in state to display
   snap = async () => {
     if (this.camera) {
       this.camera.takePictureAsync()
@@ -32,9 +36,14 @@ export default class CameraExample extends React.Component {
     }
   };
 
+  // To cancel the image and retake another picture
+  handleCancel = () => {
+    console.log('cancel')
+    this.setState({ currentImg: null });
+  }
+
   render() {
     const { hasCameraPermission } = this.state;
-    const { width, height } = Dimensions.get('window');
     if (hasCameraPermission === null) { // Display Nothing while Asking User for Permissions
       return <View />;
     }
@@ -46,22 +55,24 @@ export default class CameraExample extends React.Component {
         <View style={styles.main}>
           <Camera style={styles.main} type={this.state.type} ref={ref => {this.camera = ref;}}>
             <View style={styles.cameraViewContainer}>
-              <View style={{ flexDirection:'row', borderWidth: 5 }}>
-                <Ripple><Image style={{ width: 50, height: 50, borderWidth: 5 }} source={require('../assets/guest.png')} /></Ripple>
-              </View>
-              <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-                <Ripple><Image style={{ width: 50, height: 50 }} source={require('../assets/collections.png')} /></Ripple>
-                <Ripple onPress={this.snap}>
-                  <Image style={{ width: 50, height: 50 }} source={require('../assets/camera.png')} />
+              <View style={styles.topBarContainer}>
+                <Ripple rippleColor="#FFFFFF" rippleContainerBorderRadius={15}>
+                  <Image style={styles.iconSize} source={require('../assets/guest.png')} />
                 </Ripple>
-                <View style={{ width: 50, height: 50 }} ></View>
+              </View>
+              <View style={styles.bottomBarContainer}>
+                <Ripple rippleColor="#FFFFFF" rippleContainerBorderRadius={15}>
+                  <Image style={styles.iconSize} source={require('../assets/collections.png')} />
+                </Ripple>
+                <Ripple rippleColor="#FFFFFF" rippleContainerBorderRadius={15} onPress={this.snap}>
+                  <Image style={styles.iconSize} source={require('../assets/camera.png')} />
+                </Ripple>
+                <View style={styles.iconSize} ></View>
               </View>
             </View>
           </Camera>
         </View>
-      ) : (<View style={{ flex: 1 }}>
-            <Image source={{ width: width, height: height, uri: this.state.currentImg }} />
-          </View>); // Display the Static Image Taken
+      ) : <CameraScreenPreview currentImg={this.state.currentImg} cancel={this.handleCancel} /> // Preview the Static Image Taken
     }
   }
 }
@@ -75,10 +86,32 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   cameraViewContainer: {
-    borderWidth: 5,
-    borderColor: 'white',
+    // borderWidth: 5,
+    // borderColor: 'white',
     backgroundColor: 'transparent',
     flex: 1,
     justifyContent: 'space-between'
-  }
+  },
+  topBarContainer: {
+    // borderWidth: 5,
+    // borderColor: 'green',
+    flexDirection:'row',
+    paddingTop: 20,
+    paddingLeft: 10
+  },
+  bottomBarContainer: {
+    // borderWidth: 5,
+    // borderColor: 'red',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingBottom: 15,
+    paddingLeft: 10,
+    paddingRight: 10
+  },
+  iconSize: {
+    height: 50,
+    width: 50,
+  },
 });
+
+export default CameraScreen;

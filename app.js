@@ -17,7 +17,7 @@ const WhatsArt = createStackNavigator(
     Camera: { screen: CameraScreen },
   },
   {
-    initialRouteName: 'Landing',
+    initialRouteName: 'Camera',
     navigationOptions: {
       headerStyle: {
         backgroundColor: '#009688',

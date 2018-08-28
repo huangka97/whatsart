@@ -1,5 +1,5 @@
 {
-  "name": "empty-project-template",
+  "name": "whatsart",
   "main": "node_modules/expo/AppEntry.js",
   "private": true,
   "scripts": {
@@ -9,7 +9,7 @@
     "eject": "expo eject"
   },
   "dependencies": {
-    "@google-cloud/vision": "^0.21.0",
+    "@expo/vector-icons": "^6.3.1",
     "expo": "^29.0.0",
     "lottie-react-native": "^2.5.6",
     "react": "16.3.1",
