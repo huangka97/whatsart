@@ -1,14 +1,14 @@
 // Imports the Google Cloud client library
 const vision = require('@google-cloud/vision');
-import routes from "./routes.js"
-import express form "express";
+// import routes from "./routes.js"
+import express from "express";
 import mongoose from "mongoose";
 import bodyParser from 'body-parser';
 import models from "./models/models.js";
 import session from "express-session";
 import passport from "passport";
 
-
+const Artwork =models.Artwork;
 const LocalStrategy = require("passport-local").Strategy;
 const MongoStore = require("connect-mongo")(session);
 const app = express();
@@ -26,8 +26,8 @@ app.use(bodyParser.urlencoded({extended: false }));
 
 
 /*OAUTH BOILERPLATE*/
-const oauth2Client = new google.auth.OAuth2(
-);
+// const oauth2Client = new google.auth.OAuth2(
+// );
 
 
 /*PASSPORT BOILERPLATE*/
@@ -69,17 +69,34 @@ passport.use(new LocalStrategy(function(username, password, done) {
 app.use(passport.initialize());
 app.use(passport.session());
 
-//MONGODB ROUTES
+//MONGODB routes
 app.post('/newart',function(req,res){
-  var newArt=new ArtWork({
+  console.log("ENTERED ROUTE")
+  let newArt= new Artwork({
     uri:req.body.uri
-  })
+  });
   newArt.save()
-  .then((saved)=>console.log("new art piece uri saved",saved))
-  .catch((err)=>console.log("new art piece uri not saved",err))
+  .then((saved)=>console.log("SUCCESSFULLY SAVED URI",saved))
+  .catch((err)=>console.log("NEWART NOT SAVED",err))
 })
 
 
+
+// Creates a client
+// const client = new vision.ImageAnnotatorClient();
+//
+// // Performs label detection on the image file
+// client
+//   .labelDetection('./resources/demo-image.jpg')
+//   .then(results => {
+//     const labels = results[0].labelAnnotations;
+//
+//     console.log('Labels:');
+//     labels.forEach(label => console.log(label.description));
+//   })
+//   .catch(err => {
+//     console.error('ERROR:', err);
+//   });
 
 
 app.listen(process.env.PORT || 3000);
