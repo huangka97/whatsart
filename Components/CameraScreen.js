@@ -36,11 +36,7 @@ export default class CameraExample extends React.Component {
               "content":base64
             },
             "features":[
-              {
-                 "type":"LOGO_DETECTION",
-                 maxResults:1,
 
-              },
               {
                 "type":"WEB_DETECTION",
                 maxResults:1,
@@ -64,8 +60,20 @@ export default class CameraExample extends React.Component {
       this.camera.takePictureAsync({base64: true})
       .then(async ({ uri, base64 })=> {
         this.setState({ currentImg: uri });
+        console.log("THIS IS URI FAM BAM:", uri);
         this.checkforLogos(base64)
         .then((searchResult) => console.log(searchResult.responses))
+        .then((uri)=>fetch('http://10.2.103.5:3000/newart',{
+          method:"POST",
+          credentials:"same-origin",
+          headers:{
+            "Content-Type":"application/json"
+          },
+          body:JSON.stringify({
+            uri:this.state.currentImg
+          })
+        }))
+        .catch((err)=>console.log("TOUGH FAM",err));
       });
     }
   };
