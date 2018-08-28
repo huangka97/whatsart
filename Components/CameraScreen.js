@@ -2,6 +2,8 @@ import React from 'react';
 import { StyleSheet, Text, View, TouchableOpacity, Image, Dimensions } from 'react-native';
 import { Camera, Permissions } from 'expo';
 import Ripple from 'react-native-material-ripple';
+import models from '../models/models';
+const ArtWork = models.User;
  // vision from '@google-cloud/vision';
 // import vision from '@google-cloud/vision';
 import config from "../config";
@@ -64,8 +66,22 @@ export default class CameraExample extends React.Component {
       this.camera.takePictureAsync({base64: true})
       .then(async ({ uri, base64 })=> {
         this.setState({ currentImg: uri });
+        fetch('http://localhost:3000/newart',{
+          method:"POST",
+          credentials:"same-origin",
+          headers:{
+            'Content-Type':'application/json'
+          },
+          body:JSON.stringify({
+            uri:this.state.currentImg
+          })
+        }).then((response)=>{
+          console.log("SUCCESSFULLY SAVED NEW ART")
+        })
+
         this.checkforLogos(base64)
         .then((searchResult) => console.log(searchResult.responses))
+        // .then(())
       });
     }
   };

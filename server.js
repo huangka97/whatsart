@@ -69,23 +69,17 @@ passport.use(new LocalStrategy(function(username, password, done) {
 app.use(passport.initialize());
 app.use(passport.session());
 
-
-
-// Creates a client
-const client = new vision.ImageAnnotatorClient();
-
-// Performs label detection on the image file
-client
-  .labelDetection('./resources/demo-image.jpg')
-  .then(results => {
-    const labels = results[0].labelAnnotations;
-
-    console.log('Labels:');
-    labels.forEach(label => console.log(label.description));
+//MONGODB ROUTES
+app.post('/newart',function(req,res){
+  var newArt=new ArtWork({
+    uri:req.body.uri
   })
-  .catch(err => {
-    console.error('ERROR:', err);
-  });
+  newArt.save()
+  .then((saved)=>console.log("new art piece uri saved",saved))
+  .catch((err)=>console.log("new art piece uri not saved",err))
+})
+
+
 
 
 app.listen(process.env.PORT || 3000);
