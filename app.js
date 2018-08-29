@@ -46,5 +46,8 @@ const WhatsArt = createStackNavigator(
   }
 );
 
+//https://stackoverflow.com/questions/46264767/react-navigation-pass-props-in-tabnavigator
+//implement screenProps with splash screen for faster immediate assets later on (images, videos)
+
 console.disableYellowBox = true;
 export default WhatsArt;

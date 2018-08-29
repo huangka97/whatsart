@@ -28,20 +28,20 @@ class LoginScreen extends React.Component {
           resizeMode="cover"
           shouldPlay
           isLooping
-          style={{ position: 'absolute', width: '100%', height: '100%', opacity: 0.7 }}
+          style={{ position: 'absolute', width: '100%', height: '100%', opacity: 0.8 }}
         />
         <View style={styles.titleContainer}>
           <Text style={styles.title}>Sign In</Text>
-          <Divider style={{ width: '75%', backgroundColor: '#D3D3D3', marginTop: 20 }} />
+          <Divider style={{ width: '75%', backgroundColor: 'black', marginTop: 20 }} />
         </View>
         <View style={{ flex: 4, justifyContent: 'flex-end', }}>
-          <FormLabel>Username</FormLabel>
-          <FormInput />
+          <FormLabel labelStyle={{ color: 'black' }}>Username</FormLabel>
+          <FormInput containerStyle={{ borderBottomColor: 'black' }}/>
           { !this.state.invalidLogin ? null : <FormValidationMessage>Invalid username or password.</FormValidationMessage>}
-          <FormLabel>Password</FormLabel>
-          <FormInput />
+          <FormLabel labelStyle={{ color: 'black' }}>Password</FormLabel>
+          <FormInput containerStyle={{ borderBottomColor: 'black' }}/>
           { !this.state.invalidLogin ? null : <FormValidationMessage>Invalid username or password.</FormValidationMessage>}
-          <FormLabel labelStyle={{ alignSelf: 'center', fontSize: '14', color: '#D3D3D3' }}>Forgot Password?</FormLabel>
+          <Text style={{ alignSelf: 'center', fontSize: 14, color: 'black', marginTop: 10 }}>Forgot Password?</Text>
           <Button
             containerViewStyle={{ marginTop: 20 }}
             borderRadius={30}
@@ -52,14 +52,14 @@ class LoginScreen extends React.Component {
         <View style={{ flex: 1, justifyContent: 'center', }}>
           <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
             <Divider style={{ width: '35%', backgroundColor: 'black' }} />
-            <Text style={{ color: '#D3D3D3' }}> or </Text>
+            <Text> or </Text>
             <Divider style={{ width: '35%', backgroundColor: 'black' }} />
           </View>
         </View>
         <View style={{ flex: 4, }}>
           <SocialIcon title='Sign In With Facebook' button type='facebook' />
           <SocialIcon title='Sign In With Twitter' button type='twitter' />
-          <Text style={{ alignSelf: 'center', fontSize: '14', color: 'black', marginTop: 10 }}>
+          <Text style={{ alignSelf: 'center', fontSize: 14, color: 'black', marginTop: 10 }}>
             Don't have an account?
             <Text style={{fontWeight: "bold"}}> Sign up!</Text>
           </Text>
@@ -75,7 +75,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   titleContainer: {
-    flex: 2,
+    flex: 3,
     justifyContent: 'flex-end',
     alignItems: 'center',
   },
