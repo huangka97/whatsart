@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Text, View, Image } from 'react-native';
+import { StyleSheet, Text, View, Image, StatusBar } from 'react-native';
 import { Camera, Permissions } from 'expo';
 import Ripple from 'react-native-material-ripple';
 
@@ -10,6 +10,7 @@ class CameraScreen extends React.Component {
   static navigationOptions = { // Don't display header for camera.
     header: null
   };
+
   constructor(props) {
     super(props);
     this.state = {
@@ -53,6 +54,7 @@ class CameraScreen extends React.Component {
     else {
       return !this.state.currentImg ? ( // Return the Normal Camera Display
         <View style={styles.main}>
+          <StatusBar hidden />
           <Camera style={styles.main} type={this.state.type} ref={ref => {this.camera = ref;}}>
             <View style={styles.cameraViewContainer}>
               <View style={styles.topBarContainer}>

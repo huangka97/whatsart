@@ -12,7 +12,7 @@ class LandingScreen extends React.Component {
   render() {
     return (
       <Ripple style={styles.backgroundContainer} rippleDuration={800} rippleFades rippleSize={400}
-        onPressOut={()=>setTimeout(()=>this.props.navigation.navigate("Camera"), 500)}>
+        onPressOut={()=>setTimeout(()=>this.props.navigation.navigate("Login"), 500)}>
         <View style={styles.main}>
           <View style={styles.backgroundContainer}>
             <Image style={styles.background} source={require('../assets/landingBG.jpg')} />

@@ -1,7 +1,7 @@
 import React from 'react';
 import { StyleSheet, Text, View, Image, Dimensions, StatusBar } from 'react-native';
 import Ripple from 'react-native-material-ripple';
-import { Button } from 'react-native-elements'
+import { Button } from 'react-native-elements';
 
 class CameraScreenPreview extends React.Component {
   static navigationOptions = {
@@ -13,10 +13,10 @@ class CameraScreenPreview extends React.Component {
     return (
       <View style={styles.main}>
         <StatusBar hidden />
-        <Image style={{ position: 'absolute' }} source={{ width: width, height: height, uri: this.props.currentImg }} />
-        <View style={{ flexDirection: 'row', paddingLeft: 15, paddingTop: 15 }}>
+        <Image style={styles.previewImage} source={{ width: width, height: height, uri: this.props.currentImg }} />
+        <View style={styles.cancelButtonContainer}>
           <Ripple rippleColor="#FFFFFF" rippleContainerBorderRadius={25} rippleOpacity={0.5} onPress={()=>setTimeout(this.props.cancel, 500)}>
-            <Image style={{ height: 50, width: 50 }} source={require('../assets/cancel.png')} />
+            <Image style={styles.cancelButton} source={require('../assets/cancel.png')} />
           </Ripple>
         </View>
         <View style={styles.findButtonContainer}>
@@ -39,8 +39,20 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'space-between',
   },
+  previewImage: {
+    position: 'absolute',
+  },
+  cancelButtonContainer: {
+    flexDirection: 'row',
+    paddingLeft: 15,
+    paddingTop: 20
+  },
+  cancelButton: {
+    height: 50,
+    width: 50,
+  },
   findButtonContainer: {
-    marginBottom: 30
+    marginBottom: 40,
   }
 });
 
