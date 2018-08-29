@@ -20,7 +20,7 @@ class LoginScreen extends React.Component {
   render() {
     return (
       <View style={styles.mainContainer}>
-        <StatusBar barStyle='light-content' />
+        <StatusBar barStyle='dark-content' />
         <Video
           source={require('../assets/spiral.mp4')}
           volume={1.0}
@@ -61,7 +61,7 @@ class LoginScreen extends React.Component {
           <SocialIcon title='Sign In With Twitter' button type='twitter' />
           <Text style={{ alignSelf: 'center', fontSize: 14, color: 'black', marginTop: 10 }}>
             Don't have an account?
-            <Text style={{fontWeight: "bold"}}> Sign up!</Text>
+            <Text style={{fontWeight: "bold"}} onPress={()=>this.props.navigation.navigate("Signup")}> Sign up!</Text>
           </Text>
         </View>
       </View>

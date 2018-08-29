@@ -1,7 +1,7 @@
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { createStackNavigator } from 'react-navigation';
-import { zoomIn, fadeIn } from 'react-navigation-transitions';
+import { zoomIn, fadeIn, flipY } from 'react-navigation-transitions';
 import { Ionicons } from '@expo/vector-icons';
 
 // All Screen Components
@@ -21,7 +21,7 @@ const WhatsArt = createStackNavigator(
     Test: { screen: TestScreen }, // Remove later, for testing purposes
   },
   {
-    initialRouteName: 'Landing',
+    initialRouteName: 'Signup',
     navigationOptions: {
       headerStyle: {
         backgroundColor: '#1976D2',
@@ -33,7 +33,7 @@ const WhatsArt = createStackNavigator(
     },
     transitionConfig: (prop) => {
       const routeName = prop.scene.route.routeName;
-      if (['Landing', 'Login'].includes(routeName)) {
+      if (['Landing', 'Login', 'Signup'].includes(routeName)) {
         return fadeIn(600);
       }
       else if (routeName === 'Camera') {
