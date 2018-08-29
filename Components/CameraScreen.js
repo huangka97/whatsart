@@ -26,13 +26,56 @@ class CameraScreen extends React.Component {
     this.setState({ hasCameraPermission: status === 'granted' });
   }
 
-  // Take a picture and set the current image in state to display
+  //API CALL TO GOOGLE Cloud
+  async checkforLogos(base64){
+    return await
+    fetch(config.googleCloud.api+config.googleCloud.apiKey,{
+      method:'POST',
+      body:JSON.stringify({
+        "requests":[
+          {
+            "image":{
+              "content":base64
+            },
+            "features":[
+
+              {
+                "type":"WEB_DETECTION",
+                maxResults:1,
+              }
+            ]
+          }
+        ]
+      })
+    }).then((response)=>{
+      console.log("SUCCESS");
+      return response.json();
+
+    }).catch((err)=>{
+      console.log("You done goofed fam",err);
+    })
+  }
+
+//CAMERA FUNCTIONALITY
   snap = async () => {
     if (this.camera) {
-      this.camera.takePictureAsync()
-      .then(({ uri })=> {
-        console.log(uri);
+      this.camera.takePictureAsync({base64: true})
+      .then(async ({ uri, base64 })=> {
         this.setState({ currentImg: uri });
+        console.log("THIS IS URI FAM BAM:", uri);
+        this.checkforLogos(base64)
+        .then((searchResult) => console.log(searchResult.responses))
+        .then((uri)=>fetch('http://10.2.103.5:3000/newart',{
+          method:"POST",
+          credentials:"same-origin",
+          headers:{
+            "Content-Type":"application/json"
+          },
+          body:JSON.stringify({
+            uri:this.state.currentImg
+          })
+        }))
+        .catch((err)=>console.log("TOUGH FAM",err));
       });
     }
   };

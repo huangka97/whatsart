@@ -15,7 +15,7 @@ class SignupScreen extends React.Component {
       password: '',
     }
   }
-
+  // Implement Modal Box Instead??
   render() {
     return (
       <View style={styles.mainContainer}>

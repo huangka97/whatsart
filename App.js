@@ -21,7 +21,7 @@ const WhatsArt = createStackNavigator(
     Test: { screen: TestScreen }, // Remove later, for testing purposes
   },
   {
-    initialRouteName: 'Signup',
+    initialRouteName: 'Landing',
     navigationOptions: {
       headerStyle: {
         backgroundColor: '#1976D2',
@@ -46,8 +46,8 @@ const WhatsArt = createStackNavigator(
   }
 );
 
-//https://stackoverflow.com/questions/46264767/react-navigation-pass-props-in-tabnavigator
-//implement screenProps with splash screen for faster immediate assets later on (images, videos)
+// https://stackoverflow.com/questions/46264767/react-navigation-pass-props-in-tabnavigator
+// Implement screenProps with splash screen for faster immediate assets later on (images, videos)
 
 console.disableYellowBox = true;
 export default WhatsArt;

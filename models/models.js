@@ -14,7 +14,7 @@ const ArtworkSchema = new Schema({
   dateCreated: String,
   medium: String,
   title: String,
-  url: String//is this how we want to store images?
+  uri: String//is this how we want to store images?
 });
 
 const User = mongoose.model("User", userSchema);
