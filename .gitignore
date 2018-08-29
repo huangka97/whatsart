@@ -65,3 +65,5 @@ typings/
 node_modules/**/*
 .expo/*
 npm-debug.*
+
+.DS_STORE

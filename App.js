@@ -9,6 +9,9 @@ import LandingScreen from './Components/LandingScreen.js';
 import LoginScreen from './Components/LoginScreen.js';
 import SignupScreen from './Components/SignupScreen.js';
 import CameraScreen from './Components/CameraScreen.js';
+import CollectionScreen from './Components/CollectionScreen.js';
+
+// For Testing Purposes
 import TestScreen from './Components/TestScreen.js';
 
 // For Navigation Between Screens
@@ -18,10 +21,11 @@ const WhatsArt = createStackNavigator(
     Login: { screen: LoginScreen },
     Signup: { screen: SignupScreen },
     Camera: { screen: CameraScreen },
+    Collection: { screen: CollectionScreen },
     Test: { screen: TestScreen }, // Remove later, for testing purposes
   },
   {
-    initialRouteName: 'Landing',
+    initialRouteName: 'Collection',
     navigationOptions: {
       headerStyle: {
         backgroundColor: '#1976D2',
