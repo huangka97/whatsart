@@ -14,8 +14,7 @@ export default (passport) => {
   );
 
   // Signup Validation Helper
-  const validateSignup = userData => (userData.email && userData.firstName
-    && userData.lastName && userData.username && userData.password);
+  const validateSignup = userData => (userData.email && userData.firstName && userData.lastName && userData.password);
 
   // sha256 Hashing For Passwords
   const hashPassword = (password) => {
@@ -31,20 +30,17 @@ export default (passport) => {
     }
     else {
       const { firstName, lastName, password } = req.body;
-      let { username, email } = req.body;
-      username = username.toLowerCase();
-      email = email.toLowerCase();
-      User.find({ $or: [ { email: email }, { username: username } ]})
+      const email = req.body.email.toLowerCase();
+      User.find({ email: email })
       .then((users) => {
         if (users.length) {
-          res.json({ success: false, emailTaken: users[0].email === email, userTaken: users[0].username === username });
+          res.json({ success: false, emailTaken: users[0].email === email });
         }
         else {
           const user = new User({
             email: email,
             firstName: firstName,
             lastName: lastName,
-            username: username,
             password: hashPassword(password),
             artworkCollection: [],
           });

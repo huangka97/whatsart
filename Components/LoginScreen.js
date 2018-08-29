@@ -12,15 +12,15 @@ class LoginScreen extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      username: '',
+      email: '',
       password: '',
       invalidLogin: false,
     }
   }
 
   handleLogin = () => {
-    const { username, password } = this.state;
-    if (username && password) {
+    const { email, password } = this.state;
+    if (email && password) {
       fetch('http://10.2.103.54:3000/login', {
         method: "POST",
         credentials: "same-origin",
@@ -28,13 +28,12 @@ class LoginScreen extends React.Component {
           "Content-Type":"application/json"
         },
         body: JSON.stringify({
-          username: username,
+          email: email,
           password: password,
         })
       })
       .then((resp) => resp.json())
       .then((response) => {
-        console.log('Response:', response);
         if (response.success) {
           this.props.navigation.navigate("Camera");
         }
@@ -64,8 +63,8 @@ class LoginScreen extends React.Component {
           <Divider style={{ width: '75%', backgroundColor: 'black', marginTop: 20 }} />
         </View>
         <View style={{ flex: 4, justifyContent: 'flex-end', }}>
-          <FormLabel labelStyle={{ color: 'black' }}>Username</FormLabel>
-          <FormInput onChangeText={(username)=>this.setState({ username })} autoCapitalize='none' containerStyle={{ borderBottomColor: 'black' }}/>
+          <FormLabel labelStyle={{ color: 'black' }}>Email</FormLabel>
+          <FormInput onChangeText={(email)=>this.setState({ email })} autoCapitalize='none' containerStyle={{ borderBottomColor: 'black' }}/>
           { !this.state.invalidLogin ? null : <FormValidationMessage>Invalid username or password.</FormValidationMessage>}
           <FormLabel labelStyle={{ color: 'black' }}>Password</FormLabel>
           <FormInput onChangeText={(password)=>this.setState({ password })} secureTextEntry containerStyle={{ borderBottomColor: 'black' }}/>

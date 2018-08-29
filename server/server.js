@@ -24,7 +24,7 @@ const MongoStore = require('connect-mongo')(session);
 // Initializing Server
 const app = express();
 const server = http.Server(app);
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 3001;
 server.listen(port);
 console.log(`Server running at http://${internalIp.v4.sync()}:${port}/`);
 
@@ -49,8 +49,8 @@ const hashPassword = (password) => {
 };
 
 // Passport Methods
-passport.use(new LocalStrategy(function(username, password, done) {
-  User.findOne({ username: username }, (err, user) => {
+passport.use(new LocalStrategy({ usernameField: 'email' }, (username, password, done) => {
+  User.findOne({ email: username }, (err, user) => {
     if (err) {
       return done(err);
     }
@@ -81,3 +81,16 @@ app.use(passport.session());
 // All Routes
 app.use('/', auth(passport));
 app.use('/', routes);
+
+import infobox from 'wiki-infobox';
+
+const page = 'Mona Lisa';
+const language = 'en';
+
+infobox(page, language, function(err, data){
+  if (err) {
+    console.log('ERROR:', err);
+    return;
+  }
+  console.log(data);
+});
