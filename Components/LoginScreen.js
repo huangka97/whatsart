@@ -17,6 +17,35 @@ class LoginScreen extends React.Component {
       invalidLogin: false,
     }
   }
+
+  handleLogin = () => {
+    const { username, password } = this.state;
+    if (username && password) {
+      fetch('http://10.2.103.54:3000/login', {
+        method: "POST",
+        credentials: "same-origin",
+        headers: {
+          "Content-Type":"application/json"
+        },
+        body: JSON.stringify({
+          username: username,
+          password: password,
+        })
+      })
+      .then((resp) => resp.json())
+      .then((response) => {
+        console.log('Response:', response);
+        if (response.success) {
+          this.props.navigation.navigate("Camera");
+        }
+        else {
+          console.log('implement later');
+        }
+      })
+      .catch((err)=>console.log("ERROR:", err));
+    }
+  }
+
   render() {
     return (
       <View style={styles.mainContainer}>
@@ -36,13 +65,14 @@ class LoginScreen extends React.Component {
         </View>
         <View style={{ flex: 4, justifyContent: 'flex-end', }}>
           <FormLabel labelStyle={{ color: 'black' }}>Username</FormLabel>
-          <FormInput containerStyle={{ borderBottomColor: 'black' }}/>
+          <FormInput onChangeText={(username)=>this.setState({ username })} autoCapitalize='none' containerStyle={{ borderBottomColor: 'black' }}/>
           { !this.state.invalidLogin ? null : <FormValidationMessage>Invalid username or password.</FormValidationMessage>}
           <FormLabel labelStyle={{ color: 'black' }}>Password</FormLabel>
-          <FormInput containerStyle={{ borderBottomColor: 'black' }}/>
+          <FormInput onChangeText={(password)=>this.setState({ password })} secureTextEntry containerStyle={{ borderBottomColor: 'black' }}/>
           { !this.state.invalidLogin ? null : <FormValidationMessage>Invalid username or password.</FormValidationMessage>}
           <Text style={{ alignSelf: 'center', fontSize: 14, color: 'black', marginTop: 10 }}>Forgot Password?</Text>
           <Button
+            onPress={this.handleLogin}
             containerViewStyle={{ marginTop: 20 }}
             borderRadius={30}
             title='Sign In'
