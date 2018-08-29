@@ -26,7 +26,7 @@ const app = express();
 const server = http.Server(app);
 const port = process.env.PORT || 3000;
 server.listen(port);
-console.log(`Server running at http://${internalIp.v4.sync()}/`);
+console.log(`Server running at http://${internalIp.v4.sync()}:${port}/`);
 
 // Initializing Middleware
 app.use(logger('dev'));

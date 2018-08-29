@@ -30,11 +30,14 @@ export default (passport) => {
       res.json({ success: false });
     }
     else {
-      const { email, firstName, lastName, username, password } = req.body;
+      const { firstName, lastName, password } = req.body;
+      let { username, email } = req.body;
+      username = username.toLowerCase();
+      email = email.toLowerCase();
       User.find({ $or: [ { email: email }, { username: username } ]})
       .then((users) => {
         if (users.length) {
-          res.json({ success: false, emailTaken: !!users[0].email, userTaken: !!users[0].username });
+          res.json({ success: false, emailTaken: users[0].email === email, userTaken: users[0].username === username });
         }
         else {
           const user = new User({
