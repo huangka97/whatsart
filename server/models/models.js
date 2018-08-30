@@ -45,7 +45,15 @@ const artworkSchema = new Schema({
     required: true,
     type: String,
   },
-  dateCreated: {
+  year: {
+    required: true,
+    type: String,
+  },
+  city: {
+    required: true,
+    type: String,
+  },
+  museum: {
     required: true,
     type: String,
   },
@@ -53,7 +61,14 @@ const artworkSchema = new Schema({
     required: true,
     type: String,
   },
-  image: String,
+  dimensions: {
+    required: true,
+    type: String,
+  },
+  imageURL: {
+    required: true,
+    type: String,
+  },
   dateViewed: {
     required: true,
     type: Date,
