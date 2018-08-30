@@ -2,7 +2,7 @@ import React from 'react';
 import { StyleSheet, Text, View, Image, StatusBar } from 'react-native';
 import { Camera, Permissions } from 'expo';
 import Ripple from 'react-native-material-ripple';
-
+import config from "../config.json"
 // To preview the image taken before deciding to process it
 import CameraScreenPreview from './CameraScreenPreview.js';
 
@@ -17,6 +17,7 @@ class CameraScreen extends React.Component {
       hasCameraPermission: null,
       type: Camera.Constants.Type.back,
       currentImg: null,
+      showCollection:"cameraScreen"
     };
   }
 
@@ -53,6 +54,12 @@ class CameraScreen extends React.Component {
 
     }).catch((err)=>{
       console.log("You done goofed fam",err);
+    })
+  }
+
+  onCollection(){
+    this.setState({
+      showCollection:"collectionScreen"
     })
   }
 
@@ -95,7 +102,8 @@ class CameraScreen extends React.Component {
       return <View style={styles.noAccess}><Text>No access given to camera.</Text></View>;
     }
     else {
-      return !this.state.currentImg ? ( // Return the Normal Camera Display
+      return ( // Return the Normal Camera Display
+        !this.state.currentImg ?
         <View style={styles.main}>
           <StatusBar hidden />
           <Camera style={styles.main} type={this.state.type} ref={ref => {this.camera = ref;}}>
@@ -106,7 +114,7 @@ class CameraScreen extends React.Component {
                 </Ripple>
               </View>
               <View style={styles.bottomBarContainer}>
-                <Ripple rippleColor="#FFFFFF" rippleContainerBorderRadius={15}>
+                <Ripple rippleColor="#FFFFFF" rippleContainerBorderRadius={15} onPress={()=>this.props.navigation.navigate("Collection")}>
                   <Image style={styles.iconSize} source={require('../assets/collections.png')} />
                 </Ripple>
                 <Ripple rippleColor="#FFFFFF" rippleContainerBorderRadius={15} onPress={this.snap}>
@@ -117,7 +125,11 @@ class CameraScreen extends React.Component {
             </View>
           </Camera>
         </View>
-      ) : <CameraScreenPreview currentImg={this.state.currentImg} cancel={this.handleCancel} /> // Preview the Static Image Taken
+      : <CameraScreenPreview currentImg={this.state.currentImg} cancel={this.handleCancel}/>)
+
+
+     // Preview the Static Image Taken
+
     }
   }
 }

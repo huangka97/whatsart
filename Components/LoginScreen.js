@@ -35,6 +35,7 @@ class LoginScreen extends React.Component {
       .then((resp) => resp.json())
       .then((response) => {
         if (response.success) {
+          
           this.props.navigation.navigate("Camera");
         }
         else {
