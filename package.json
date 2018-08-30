@@ -15,6 +15,7 @@
     "babel-plugin-transform-object-rest-spread": "^6.26.0",
     "babel-preset-es2015": "^6.24.1",
     "babel-preset-stage-2": "^6.24.1",
+    "body-parser": "^1.18.3",
     "connect-mongo": "^2.0.1",
     "cookie-parser": "^1.4.3",
     "crypto": "^1.0.1",
@@ -40,7 +41,8 @@
     "react-native-textinput-effects": "^0.4.2",
     "react-native-typography": "^1.3.0",
     "react-navigation": "^2.11.2",
-    "react-navigation-transitions": "^1.0.5"
+    "react-navigation-transitions": "^1.0.5",
+    "wiki-infobox": "^0.4.0"
   },
   "devDependencies": {
     "babel-cli": "^6.26.0"

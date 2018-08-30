@@ -14,15 +14,14 @@ class SignupScreen extends React.Component {
       email: '',
       firstName: '',
       lastName: '',
-      username: '',
       password: '',
       repeatPassword: '',
     }
   }
 
   handleSignup = () => {
-    const { email, firstName, lastName, username, password, repeatPassword } = this.state;
-    if ((email && firstName && lastName &&  username && password
+    const { email, firstName, lastName, password, repeatPassword } = this.state;
+    if ((email && firstName && lastName && password
         && repeatPassword && password === repeatPassword))
     {
       fetch('http://10.2.103.54:3000/signup', {
@@ -35,13 +34,11 @@ class SignupScreen extends React.Component {
           email: email,
           firstName: firstName,
           lastName: lastName,
-          username: username,
           password: password,
         })
       })
       .then((resp) => resp.json())
       .then((response) => {
-        console.log('Response:', response);
         if (response.success) {
           this.props.navigation.navigate("Login");
         }
@@ -62,14 +59,12 @@ class SignupScreen extends React.Component {
           <Divider style={{ width: '75%', backgroundColor: 'black', marginTop: 20 }} />
         </View>
         <View style={{ flex: 4, marginTop: 30 }}>
-          <FormLabel labelStyle={{ color: 'black' }}>Email</FormLabel>
-          <FormInput onChangeText={(email)=>this.setState({ email })} autoCapitalize='none' containerStyle={{ borderBottomColor: 'black' }}/>
           <FormLabel labelStyle={{ color: 'black' }}>First Name</FormLabel>
           <FormInput onChangeText={(firstName)=>this.setState({ firstName })} containerStyle={{ borderBottomColor: 'black' }}/>
           <FormLabel labelStyle={{ color: 'black' }}>Last Name</FormLabel>
           <FormInput onChangeText={(lastName)=>this.setState({ lastName })} containerStyle={{ borderBottomColor: 'black' }}/>
-          <FormLabel labelStyle={{ color: 'black' }}>Username</FormLabel>
-          <FormInput onChangeText={(username)=>this.setState({ username })} autoCapitalize='none' containerStyle={{ borderBottomColor: 'black' }}/>
+          <FormLabel labelStyle={{ color: 'black' }}>Email</FormLabel>
+          <FormInput onChangeText={(email)=>this.setState({ email })} autoCapitalize='none' containerStyle={{ borderBottomColor: 'black' }}/>
           <FormLabel labelStyle={{ color: 'black' }}>Password</FormLabel>
           <FormInput onChangeText={(password)=>this.setState({ password })} secureTextEntry containerStyle={{ borderBottomColor: 'black' }}/>
           <FormLabel labelStyle={{ color: 'black' }}>Repeat Password</FormLabel>
