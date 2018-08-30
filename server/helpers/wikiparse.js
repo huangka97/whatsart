@@ -37,9 +37,15 @@ const getMuseum = (museumData) => {
 // Helper: Get Medium of Artwork
 const getMedium = (data) => {
   if (data.medium) {
-    return data.medium.text || data.medium.value;
+    if(Object.prototype.toString.call(data.medium) === '[object Object]') {
+      return data.medium.text || data.medium.value;
+    }
+    return data.material.map((obj) => obj.text || obj.value).join('');
   }
   else if (data.material) {
+    if(Object.prototype.toString.call(data.material) === '[object Object]') {
+      return data.material.text || data.material.value;
+    }
     return data.material.map((obj) => obj.text || obj.value).join('');
   }
   else if (data.type) {
@@ -49,6 +55,14 @@ const getMedium = (data) => {
   }
 }
 
+// Helper: Get Dimensions of Artwork
+const getDimensions = (data) => {
+  const dimensions = data.height_metric && data.width_metric ?
+                  `${data.height_metric.value} cm x ${data.width_metric.value} cm (${Math.round(data.height_metric.value*0.39370*100)/100} in x ${Math.round(data.width_metric.value*0.39370*100)/100} in)`
+                  : 'Could not retrieve dimensions';
+  return dimensions;
+}
+
 // MAIN FUNCTION: Get Wikipedia Information for an Artwork
 const getWikiInfo = (page) => {
   return new Promise((resolve, reject) => {
@@ -56,7 +70,7 @@ const getWikiInfo = (page) => {
     if (err) {
       return reject(`Server could not find wikipedia page for '${page}'`);
     }
-      console.log(data);
+      //console.log(data);
       try {
         const parsedData = {
           title: data.title.value,
@@ -66,6 +80,7 @@ const getWikiInfo = (page) => {
           museum: getMuseum(data.museum),
           imageUrl: getImageUrl(data.image_file.value),
           medium: getMedium(data),
+          dimensions: getDimensions(data),
         };
         return resolve(parsedData);
       }

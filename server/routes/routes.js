@@ -4,8 +4,9 @@ import mongoose from 'mongoose';
 import restify from 'express-restify-mongoose';
 import { User, Artwork } from '../models/models.js';
 
-// Wikipedia Parsing Helper Function
+// Wikipedia Parsing
 import getWikiInfo from '../helpers/wikiparse.js';
+import axios from 'axios';
 
 // Router & Routes
 const router = express.Router();
@@ -27,9 +28,17 @@ router.post('/artwork', (req, res, next) => {
   if (!req.body.artworkName) {
     return res.status(404).send('No Artwork Name Provided.');
   } else {
-    getWikiInfo(req.body.artworkName)
-    .then((data) => res.json({ success: true, artworkData: data }))
-    .catch((err) => res.json({ success: false, error: err}));
+    Promise.all([
+      getWikiInfo(req.body.artworkName),
+      axios.get('https://en.wikipedia.org/w/api.php?format=json&action=query&prop=extracts&explaintext=1&exintro=1&exsentences=4&titles=' +
+        req.body.artworkName.replace(/ /g, '+'))
+    ])
+    .then((responses) => {
+      const [artworkDetails, wikiResponse] = responses;
+      const artworkSummary = Object.values(wikiResponse.data.query.pages)[0].extract;
+      res.json({ success: true, artworkDetails: artworkDetails, artworkSummary: artworkSummary });
+    })
+    .catch((err) => res.status(404).json({ success: false, error: err}));
   }
 });
 
