@@ -2,67 +2,115 @@ import React from 'react';
 import { StyleSheet, TouchableOpacity, Text, View, Image } from 'react-native';
 import { material, iOSColors, systemWeights } from 'react-native-typography';
 import { Avatar } from 'react-native-elements';
+import { MapView } from 'expo';
 
 class CollectionScreen extends React.Component {
+  constructor(props){
+    super(props);
+    this.state={
+      mode:"myCollection",
+ //     showCollection:false,
+      newUser:true,
+      lat: 0,
+      long: 0
+    }
+  }
   static navigationOptions = {
     header: null
   };
 
-  constructor(props){
-    super(props);
-    this.state = {
-      mode: "myScans",
-    }
+  componentDidMount()
+  {
+    navigator.geolocation.getCurrentPosition(
+      (success) => {
+        this.setState({
+          lat: success.coords.latitude,
+          long: success.coords.longitude
+        })
+      }
+    )
   }
 
-  toggleCollectionView = () => {
-    this.setState({ mode: "myCollection" });
+
+  toggleCollection() {
+    this.setState({
+      mode:"myCollection"
+    })
   }
 
-  toggleScanView = () => {
-    this.setState({ mode: "myScans" });
+  toggleScan() {
+    this.setState({
+      mode:"myScans"
+    })
   }
 
-  render() {
-    return (
-      <View style={styles.mainContainer}>
-        <View style={styles.randoContainer}></View>
-        <View style={styles.userContainer}>
-          <Avatar
-            large
-            rounded
-            source={require('../assets/karl.jpg')}
-            onPress={() => console.log("Works!")}
-            activeOpacity={0.7}
-          />
-          <Text style={styles.userTitle}>Karl</Text>
-        </View>
+  toggleMap() {
+    this.setState({
+      mode:"myMap"
+    })
+  }
 
-        <View style={styles.scanandcollectionContainer}>
-          <TouchableOpacity onPress={this.toggleCollectionView}>
-          <Text style={styles.collectionContainer}>My Collection </Text>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={this.toggleScanView}>
-          <Text style={styles.scansContainer}>My Scans</Text>
-          </TouchableOpacity>
-        </View>
-        {this.state.mode =="myCollection"?
+ 	getModeRender = (mode) => {
+		switch(mode) {
+			case 'myCollection':
+      	return (
           <View style={styles.createCollectionContainer}>
             <Image style={styles.iconSize} source={require('../assets/addtocollection.png')} />
             <Text style={styles.textSize}>Create Your Collection</Text>
             <Text>Tap the add icon when you like a piece of art to </Text>
             <Text>save it to your collection</Text>
           </View>
-        :
-          <View style={styles.createScanContainer}>
-            <Image style={styles.iconSize} source={require('../assets/photo_camera.png')}/>
-            <Text style={styles.textSize}>Start Snapping!</Text>
-            <Text>Once you get started you'll find all of your</Text>
-            <Text>previous photos here.</Text>
-          </View>
-        }
+        );
+			case 'myScans':
+          return (
+            <View style={styles.createScanContainer}>
+              <Image style={styles.iconSize} source={require('../assets/photo_camera.png')}/>
+              <Text style={styles.textSize}>Start Snapping!</Text>
+              <Text>Once you get started you'll find all of your</Text>
+              <Text>previous photos here.</Text>
+            </View>
+          )
+      case 'myMap':
+      	return (
+          <MapView style = {{flex: 4}}
+             initialRegion = {{
+               latitude: this.state.lat,
+               longitude: this.state.long,
+               latitudeDelta: .5,
+               longitudeDelta: .25
+             }}
+          />
+      	);
+      default: return null;
+
+		}
+	}
+
+  render() {
+    return (
+      <View style={styles.main}>
+        <View style={styles.randoContainer}>
+        </View>
+
+        <View style={styles.userContainer}>
+          <Image style={styles.image} source={require('../assets/karl.jpg')}/>
+          <Text style={styles.userTitle}>Karl</Text>
+        </View>
+
+        <View style={styles.scanandcollectionContainer}>
+          <TouchableOpacity onPress={this.toggleCollection.bind(this)}>
+            <Text style={styles.collectionContainer}>My Collection </Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={this.toggleScan.bind(this)}>
+            <Text style={styles.scansContainer}>My Scans</Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={this.toggleMap.bind(this)}>
+            <Text style={styles.mapsContainer}>My Map</Text>
+          </TouchableOpacity>
+        </View>
+			  {this.getModeRender(this.state.mode)}
       </View>
-    )
+    );
   }
 }
 
@@ -104,6 +152,9 @@ const styles=StyleSheet.create({
     ...material.titleObject
   },
   scansContainer:{
+    ...material.titleObject
+  },
+  mapsContainer:{
     ...material.titleObject
   },
   randoContainer:{

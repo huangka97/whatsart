@@ -7,6 +7,9 @@ class CameraScreenPreview extends React.Component {
   static navigationOptions = {
     header: null
   };
+  
+
+
 
   render() {
     const { width, height } = Dimensions.get('window');
@@ -20,12 +23,13 @@ class CameraScreenPreview extends React.Component {
           </Ripple>
         </View>
         <View style={styles.findButtonContainer}>
-          <Ripple>
+          <Ripple onPress={()=>setTimeout(this.props.showInfo,500)}>
             <Button
               title='Find Artwork'
               backgroundColor="#008B7D"
               iconRight={{ name: 'search' }}
               raised
+
             />
           </Ripple>
         </View>
