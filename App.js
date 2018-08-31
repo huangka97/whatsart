@@ -24,6 +24,7 @@ const WhatsArt = createStackNavigator(
     Camera: { screen: CameraScreen },
     Collection: { screen: CollectionScreen },
     UserProfile:{screen: ProfileScreen},
+  
     Test: { screen: TestScreen }, // Remove later, for testing purposes
   },
   {

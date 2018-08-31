@@ -5,7 +5,7 @@ import Ripple from 'react-native-material-ripple';
 import config from "../config.json"
 // To preview the image taken before deciding to process it
 import CameraScreenPreview from './CameraScreenPreview.js';
-
+import InformationScreen from './InformationScreen.js';
 class CameraScreen extends React.Component {
   static navigationOptions = { // Don't display header for camera.
     header: null
@@ -17,7 +17,7 @@ class CameraScreen extends React.Component {
       hasCameraPermission: null,
       type: Camera.Constants.Type.back,
       currentImg: null,
-      showCollection:"cameraScreen"
+      showInformationScreen:true,
     };
   }
 
@@ -57,11 +57,7 @@ class CameraScreen extends React.Component {
     })
   }
 
-  onCollection(){
-    this.setState({
-      showCollection:"collectionScreen"
-    })
-  }
+
 
 //CAMERA FUNCTIONALITY
   snap = async () => {
@@ -92,6 +88,9 @@ class CameraScreen extends React.Component {
     console.log('cancel')
     this.setState({ currentImg: null });
   }
+  toggleInformation=()=>{
+    this.setState({showInformationScreen:true});
+  }
 
   render() {
     const { hasCameraPermission } = this.state;
@@ -103,7 +102,7 @@ class CameraScreen extends React.Component {
     }
     else {
       return ( // Return the Normal Camera Display
-        !this.state.currentImg ?
+        !this.state.currentImg && !this.state.showInformationScreen ?
         <View style={styles.main}>
           <StatusBar hidden />
           <Camera style={styles.main} type={this.state.type} ref={ref => {this.camera = ref;}}>
@@ -125,7 +124,9 @@ class CameraScreen extends React.Component {
             </View>
           </Camera>
         </View>
-      : <CameraScreenPreview currentImg={this.state.currentImg} cancel={this.handleCancel}/>)
+      : !this.state.showInformationScreen? <CameraScreenPreview showInfo={this.toggleInformation} currentImg={this.state.currentImg} cancel={this.handleCancel}/>
+      :<InformationScreen/>
+    )
 
 
      // Preview the Static Image Taken
