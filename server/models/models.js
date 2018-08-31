@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import findOrCreate from 'mongoose-findorcreate';
 
 // Mongoose Connection
 if (!process.env.MONGODB_URI) {
@@ -38,42 +39,45 @@ const userSchema = new Schema({
 
 const artworkSchema = new Schema({
   title: {
-    required: true,
+    default: '',
     type: String,
   },
   artist: {
-    required: true,
+    default: '',
     type: String,
   },
   year: {
-    required: true,
+    default: '',
     type: String,
   },
   city: {
-    required: true,
+    default: '',
     type: String,
   },
   museum: {
-    required: true,
+    default: '',
     type: String,
   },
   medium: {
-    required: true,
+    default: '',
     type: String,
   },
   dimensions: {
-    required: true,
+    default: '',
     type: String,
   },
-  imageURL: {
-    required: true,
+  imgURL: {
+    default: '',
     type: String,
   },
   dateViewed: {
-    required: true,
+    default: null,
     type: Date,
   },
 });
+
+// Plugins
+artworkSchema.plugin(findOrCreate);
 
 // Models
 const User = mongoose.model("User", userSchema);

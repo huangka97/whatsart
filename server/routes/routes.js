@@ -6,7 +6,6 @@ import { User, Artwork } from '../models/models.js';
 
 // Wikipedia Parsing
 import getWikiInfo from '../helpers/wikiparse.js';
-import axios from 'axios';
 
 // Router & Routes
 const router = express.Router();
@@ -23,22 +22,24 @@ const router = express.Router();
 // RESTIFY API for Accessing Artworks
 restify.serve(router, Artwork);
 
-// POST route for new Artworks for a user
+// POST route for Users to add new Artworks
 router.post('/artwork', (req, res, next) => {
   if (!req.body.artworkName) {
     return res.status(404).send('No Artwork Name Provided.');
   } else {
-    Promise.all([
-      getWikiInfo(req.body.artworkName),
-      axios.get('https://en.wikipedia.org/w/api.php?format=json&action=query&prop=extracts&explaintext=1&exintro=1&exsentences=4&titles=' +
-        req.body.artworkName.replace(/ /g, '+'))
-    ])
-    .then((responses) => {
-      const [artworkDetails, wikiResponse] = responses;
-      const artworkSummary = Object.values(wikiResponse.data.query.pages)[0].extract;
-      res.json({ success: true, artworkDetails: artworkDetails, artworkSummary: artworkSummary });
+    let artworkInfoOutter = null;
+    getWikiInfo(req.body.artworkName)
+    .then((info) => {
+      artworkInfoOutter = { ...info, dateViewed: new Date() };
+      return Artwork.findOrCreate({ title: info.title });
     })
-    .catch((err) => res.status(404).json({ success: false, error: err}));
+    .then(({ doc }) => {
+      return Object.assign(doc, artworkInfoOutter).save();
+    })
+    .then((artwork) => {
+      res.json({ success: true, artworkInfo: artwork });
+    })
+    .catch(err =>{ console.log(err); res.status(404).json({ success: false, error: err }) });
   }
 });
 
