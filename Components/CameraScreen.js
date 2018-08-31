@@ -109,7 +109,7 @@ class CameraScreen extends React.Component {
           <Camera style={styles.main} type={this.state.type} ref={ref => {this.camera = ref;}}>
             <View style={styles.cameraViewContainer}>
               <View style={styles.topBarContainer}>
-                <Ripple rippleColor="#FFFFFF" rippleContainerBorderRadius={15}>
+                <Ripple rippleColor="#FFFFFF" rippleContainerBorderRadius={15} onPress={()=>this.props.navigation.navigate('UserProfile')}>
                   <Image style={styles.iconSize} source={require('../assets/guest.png')} />
                 </Ripple>
               </View>
