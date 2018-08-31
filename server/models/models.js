@@ -31,7 +31,7 @@ const userSchema = new Schema({
     required: true,
     type: String,
   },
-  artworkCollection: [{
+  userCollection: [{
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Artwork',
   }],

@@ -37,6 +37,8 @@ router.post('/artwork', (req, res, next) => {
       return Object.assign(doc, artworkInfoOutter).save();
     })
     .then((artwork) => {
+      //req.user.userCollection.push(artwork._id);
+      //req.user.save();
       res.json({ success: true, artworkInfo: artwork });
     })
     .catch(err =>{ console.log(err); res.status(404).json({ success: false, error: err }) });

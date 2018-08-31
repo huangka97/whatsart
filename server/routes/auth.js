@@ -42,7 +42,7 @@ export default (passport) => {
             firstName: firstName,
             lastName: lastName,
             password: hashPassword(password),
-            artworkCollection: [],
+            userCollection: [],
           });
           return user.save();
         }
