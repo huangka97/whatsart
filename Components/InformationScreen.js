@@ -17,7 +17,13 @@ class InformationScreen extends React.Component {
     this.state = {
       name:"",
       artist:"",
-      imageUrl:""
+      imageUrl:"",
+      city:"",
+      year:"",
+      museum:"",
+      medium:"",
+      dimension:"",
+      dateViewed:""
     }
   }
 
