@@ -2,7 +2,8 @@ import React from 'react';
 import { StyleSheet, Text, View, Image, StatusBar } from 'react-native';
 import { Camera, Permissions } from 'expo';
 import Ripple from 'react-native-material-ripple';
-import config from "../config.json"
+//import config from "../config.json"
+
 // To preview the image taken before deciding to process it
 import CameraScreenPreview from './CameraScreenPreview.js';
 import InformationScreen from './InformationScreen.js';

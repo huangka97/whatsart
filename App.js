@@ -9,7 +9,7 @@ import LandingScreen from './Components/LandingScreen.js';
 import LoginScreen from './Components/LoginScreen.js';
 import SignupScreen from './Components/SignupScreen.js';
 import CameraScreen from './Components/CameraScreen.js';
-import ProfileScreen from './Components/ProfileScreen.js'
+import ProfileScreen from './Components/ProfileScreen.js';
 import CollectionScreen from './Components/CollectionScreen.js';
 
 // For Testing Purposes
@@ -24,7 +24,6 @@ const WhatsArt = createStackNavigator(
     Camera: { screen: CameraScreen },
     Collection: { screen: CollectionScreen },
     UserProfile:{screen: ProfileScreen},
-  
     Test: { screen: TestScreen }, // Remove later, for testing purposes
   },
   {

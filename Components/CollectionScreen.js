@@ -1,8 +1,9 @@
 import React from 'react';
-import { TouchableOpacity,StyleSheet, Text, View, Image, StatusBar, Platform } from 'react-native';
-import {MapView} from 'expo';
+import { StyleSheet, TouchableOpacity, Text, View, Image } from 'react-native';
+import { material, iOSColors, systemWeights } from 'react-native-typography';
+import { Avatar } from 'react-native-elements';
+import { MapView } from 'expo';
 
-import {material, iOSColors,systemWeights} from 'react-native-typography';
 class CollectionScreen extends React.Component {
   constructor(props){
     super(props);
@@ -71,7 +72,7 @@ class CollectionScreen extends React.Component {
           )
       case 'myMap':
       	return (
-          <MapView style = {{flex: 4}} 
+          <MapView style = {{flex: 4}}
              initialRegion = {{
                latitude: this.state.lat,
                longitude: this.state.long,
@@ -83,7 +84,7 @@ class CollectionScreen extends React.Component {
       default: return null;
 
 		}
-	} 
+	}
 
   render() {
     return (
@@ -114,6 +115,9 @@ class CollectionScreen extends React.Component {
 }
 
 const styles=StyleSheet.create({
+  mainContainer: {
+    flex:1
+  },
   scanandcollectionContainer:{
     justifyContent:"space-around",
     backgroundColor:iOSColors.grey,
@@ -125,7 +129,6 @@ const styles=StyleSheet.create({
     ...material.titleObject,
     marginTop:10,
     marginBottom:10
-
   },
   createCollectionContainer:{
     flex:4,
@@ -139,7 +142,6 @@ const styles=StyleSheet.create({
     height: 100,
     width: 100,
   },
-
   image:{
     height:80,
     borderRadius:40,
@@ -161,16 +163,11 @@ const styles=StyleSheet.create({
     alignItems:"center",
     justifyContent:"center"
   },
-
-  main:{
-    flex:1
-  },
   userContainer:{
     flex:1,
     backgroundColor:"grey",
     flexDirection:"row",
     alignItems:'center'
-    // justifyContent:"space-around"
   },
   userTitle:{
     ...material.titleObject,
@@ -179,5 +176,6 @@ const styles=StyleSheet.create({
     marginLeft:10,
     justifyContent:'center',
   }
-})
+});
+
 export default CollectionScreen;

@@ -1,8 +1,8 @@
 import React from 'react';
-import { TouchableOpacity,StyleSheet, Text, View, Image, StatusBar, Platform } from 'react-native';
+import { TouchableOpacity, StyleSheet, Text, View, Image, StatusBar, Platform } from 'react-native';
 import { Button } from 'react-native-elements';
 import Ripple from 'react-native-material-ripple';
-import {material, iOSColors,systemWeights,materialColors} from 'react-native-typography';
+import { material, iOSColors,systemWeights,materialColors } from 'react-native-typography';
 class ProfileScreen extends React.Component {
   constructor(props){
     super(props);
