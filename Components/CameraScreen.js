@@ -90,7 +90,8 @@ class CameraScreen extends React.Component {
     this.setState({ currentImg: null });
   }
   toggleInformation=()=>{
-    this.setState({showInformationScreen:true});
+    console.log("TOGGLED");
+    this.setState({showInformationScreen:!this.state.showInformationScreen});
   }
 
   render() {
@@ -126,7 +127,7 @@ class CameraScreen extends React.Component {
           </Camera>
         </View>
       : !this.state.showInformationScreen? <CameraScreenPreview showInfo={this.toggleInformation} currentImg={this.state.currentImg} cancel={this.handleCancel}/>
-      :<InformationScreen/>
+      :<InformationScreen showInfo={this.toggleInformation}/>
     )
 
 
