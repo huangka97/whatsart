@@ -32,14 +32,14 @@ class InformationScreen extends React.Component {
 
 
   componentDidMount(){
-    fetch('http://10.2.103.54:3000/artwork', {
+    fetch('https://enigmatic-garden-90693.herokuapp.com/artwork', {
       method: "POST",
       credentials: "same-origin",
       headers: {
         "Content-Type":"application/json"
       },
       body: JSON.stringify({
-        artworkName:"Mona Lisa"
+        artworkName:this.props.artName
       })
     })
     .then((resp) => resp.json())
