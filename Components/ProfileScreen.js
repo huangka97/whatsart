@@ -4,6 +4,13 @@ import { Button, Avatar } from 'react-native-elements';
 import Ripple from 'react-native-material-ripple';
 import { material, iOSColors, systemWeights, materialColors } from 'react-native-typography';
 
+const profileIcons = {
+  Karl: require("../assets/karl.jpg"),
+  Kevin: require("../assets/kevin.jpeg"),
+  Kitan: require("../assets/kitan.jpg"),
+  default: require("../assets/defaultProfile.png")
+}
+
 class ProfileScreen extends React.Component {
   static navigationOptions = {
     header: null
@@ -12,6 +19,7 @@ class ProfileScreen extends React.Component {
   constructor(props){
     super(props);
     this.state={
+      user: '',
       name: '',
       score: '',
       newEmail: '',
@@ -21,8 +29,29 @@ class ProfileScreen extends React.Component {
     }
   }
 
+  componentDidMount() {
+    fetch('https://enigmatic-garden-90693.herokuapp.com/user', {
+      method: 'GET',
+      credentials: 'same-origin'
+    })
+    .then(response => {console.log("RESPONSE: ", response); return response.json()})
+    .then(responseJson => {
+      if (responseJson.success)
+      {
+        this.setState({user: responseJson.user.firstName});
+        console.log("GOT USER", this.state.user);
+      }
+      else
+      {
+        this.setState({user: "default"});
+        console.log("CAN'T GET PROFILE PIC");
+      }
+    })
+  }
+
+
   logout = () => {
-    fetch('http://10.2.103.54:3000/logout', {
+    fetch('https://enigmatic-garden-90693.herokuapp.com/logout', {
       method:"GET",
       credentials: "same-origin",
       headers: {
@@ -47,8 +76,8 @@ class ProfileScreen extends React.Component {
         </View>
 
         <View style={styles.profileTextContainer}>
-          <Image style={styles.image} source={require('../assets/karl.jpg')}/>
-          <Text style={styles.profileTitle}>Karl Huang</Text>
+          <Image style={styles.image} source={!this.state.user ? null : profileIcons[this.state.user] ? profileIcons[this.state.user] : profileIcons["default"]}/>
+          <Text style={styles.userTitle}>{this.state.user}</Text>
         </View>
         <View style={styles.scoreBoardContainer}>
           <Text style={styles.accountTitle}>Account</Text>
