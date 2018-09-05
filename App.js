@@ -2,7 +2,6 @@ import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { createStackNavigator } from 'react-navigation';
 import { zoomIn, fadeIn, flipY } from 'react-navigation-transitions';
-import { Ionicons } from '@expo/vector-icons';
 
 // All Screen Components
 import LandingScreen from './Components/LandingScreen.js';
@@ -23,8 +22,7 @@ const WhatsArt = createStackNavigator(
     Signup: { screen: SignupScreen },
     Camera: { screen: CameraScreen },
     Collection: { screen: CollectionScreen },
-    UserProfile:{screen: ProfileScreen},
-
+    UserProfile:{ screen: ProfileScreen },
     Test: { screen: TestScreen }, // Remove later, for testing purposes
   },
   {

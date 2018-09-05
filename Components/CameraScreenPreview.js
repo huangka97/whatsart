@@ -7,7 +7,7 @@ class CameraScreenPreview extends React.Component {
   static navigationOptions = {
     header: null
   };
-  
+
 
 
 
@@ -29,7 +29,6 @@ class CameraScreenPreview extends React.Component {
               backgroundColor="#008B7D"
               iconRight={{ name: 'search' }}
               raised
-
             />
           </Ripple>
         </View>
