@@ -5,12 +5,20 @@ import { Avatar } from 'react-native-elements';
 import { MapView } from 'expo';
 import { Marker } from 'react-native-maps';
 
+const profileIcons = {
+  Karl: require("../assets/karl.jpg"),
+  Kevin: require("../assets/kevin.jpeg"),
+  Kitan: require("../assets/kitan.jpg"),
+  default: require("../assets/defaultProfile.png")
+}
+
 class CollectionScreen extends React.Component {
   constructor(props){
     super(props);
     this.state={
       mode:"myCollection",
       newUser:true,
+      user: "",
       lat: 0,
       long: 0,
       markers: []
@@ -19,6 +27,7 @@ class CollectionScreen extends React.Component {
   static navigationOptions = {
     header: null
   };
+
 
   componentDidMount()
   {
@@ -31,7 +40,7 @@ class CollectionScreen extends React.Component {
       }
     )
   //fetch latitude and longitude of museums name to display on map
-    fetch('http://10.2.103.54:3002/museums', {
+    fetch('https://enigmatic-garden-90693.herokuapp.com/museums', {
       method: 'GET',
       credentials: 'same-origin'
     })
@@ -44,6 +53,24 @@ class CollectionScreen extends React.Component {
       }
       else {
         console.log("FAILURE!");
+      }
+    })
+
+    fetch('https://enigmatic-garden-90693.herokuapp.com/user', {
+      method: 'GET',
+      credentials: 'same-origin'
+    })
+    .then(response => {console.log("RESPONSE: ", response); return response.json()})
+    .then(responseJson => {
+      if (responseJson.success)
+      {
+        this.setState({user: responseJson.user.firstName});
+        console.log("GOT USER", this.state.user);
+      }
+      else
+      {
+        this.setState({user: "default"});
+        console.log("CAN'T GET PROFILE PIC");
       }
     })
   }
@@ -110,6 +137,7 @@ class CollectionScreen extends React.Component {
 		}
 	}
 
+
   render() {
     return (
       <View style={styles.mainContainer}>
@@ -118,8 +146,8 @@ class CollectionScreen extends React.Component {
           <View style={styles.backgroundContainer}>
             <Image style={styles.background} source={require('../assets/landingBG.jpg')} />
           </View>
-          <Image style={styles.image} source={require('../assets/karl.jpg')}/>
-          <Text style={styles.userTitle}>Karl</Text>
+          <Image style={styles.image} source={!this.state.user ? null : profileIcons[this.state.user] ? profileIcons[this.state.user] : profileIcons["default"]}/>
+          <Text style={styles.userTitle}>{this.state.user}</Text>
         </View>
 
         <View style={styles.scanandcollectionContainer}>
