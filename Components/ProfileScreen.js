@@ -39,6 +39,7 @@ class ProfileScreen extends React.Component {
       if (responseJson.success)
       {
         this.setState({user: responseJson.user.firstName});
+        this.setState({score: responseJson.user.userCollection.length});
         console.log("GOT USER", this.state.user);
       }
       else
@@ -80,17 +81,17 @@ class ProfileScreen extends React.Component {
           <Text style={styles.userTitle}>{this.state.user}</Text>
         </View>
         <View style={styles.scoreBoardContainer}>
-          <Text style={styles.accountTitle}>Account</Text>
+          <Text style={styles.infoText}>Score: {this.state.score}</Text>
         </View>
         <View style={styles.infoContainer}>
           <View style={styles.underline}>
-            <Text style={styles.infoText}>Score</Text>
+            <Text style={styles.infoText}>Terms and Conditions</Text>
           </View>
           <View style={styles.underline}>
-            <Text style={styles.infoText}>Language</Text>
+            <Text style={styles.infoText}>Privacy Policy</Text>
           </View>
           <View style={styles.underline}>
-            <Text style={styles.infoText}>Location</Text>
+            <Text style={styles.infoText}>Credits</Text>
           </View>
         </View>
         <View style={styles.logoutContainer}>
@@ -144,7 +145,8 @@ const styles=StyleSheet.create({
     flex:0.8,
     backgroundColor:iOSColors.customGray,
     flexDirection:"column",
-    justifyContent:'center'
+    justifyContent:'center',
+    alignItems: "center"
 
   },
   accountTitle:{
