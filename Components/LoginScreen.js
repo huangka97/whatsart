@@ -21,7 +21,7 @@ class LoginScreen extends React.Component {
   handleLogin = () => {
     const { email, password } = this.state;
     if (email && password) {
-      fetch('http://10.2.103.54:3000/login', {
+    fetch('https://enigmatic-garden-90693.herokuapp.com/login', {
         method: "POST",
         credentials: "same-origin",
         headers: {

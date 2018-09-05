@@ -1,20 +1,57 @@
 import React from 'react';
 import { TouchableOpacity, StyleSheet, Text, View, Image, StatusBar, Platform } from 'react-native';
-import { Button } from 'react-native-elements';
+import { Button, Avatar } from 'react-native-elements';
 import Ripple from 'react-native-material-ripple';
-import { material, iOSColors,systemWeights,materialColors } from 'react-native-typography';
-class ProfileScreen extends React.Component {
-  constructor(props){
-    super(props);
-    this.state={
+import { material, iOSColors, systemWeights, materialColors } from 'react-native-typography';
 
-    }
-  }
+const profileIcons = {
+  Karl: require("../assets/karl.jpg"),
+  Kevin: require("../assets/kevin.jpeg"),
+  Kitan: require("../assets/kitan.jpg"),
+  default: require("../assets/defaultProfile.png")
+}
+
+class ProfileScreen extends React.Component {
   static navigationOptions = {
     header: null
   };
-  logOut = () => {
-    fetch('http://10.2.103.54:3000/logout',{
+
+  constructor(props){
+    super(props);
+    this.state={
+      user: '',
+      name: '',
+      score: '',
+      newEmail: '',
+      newEmailRepeat: '',
+      newPassword: '',
+      newPasswordRepeat: '',
+    }
+  }
+
+  componentDidMount() {
+    fetch('https://enigmatic-garden-90693.herokuapp.com/user', {
+      method: 'GET',
+      credentials: 'same-origin'
+    })
+    .then(response => {console.log("RESPONSE: ", response); return response.json()})
+    .then(responseJson => {
+      if (responseJson.success)
+      {
+        this.setState({user: responseJson.user.firstName});
+        console.log("GOT USER", this.state.user);
+      }
+      else
+      {
+        this.setState({user: "default"});
+        console.log("CAN'T GET PROFILE PIC");
+      }
+    })
+  }
+
+
+  logout = () => {
+    fetch('https://enigmatic-garden-90693.herokuapp.com/logout', {
       method:"GET",
       credentials: "same-origin",
       headers: {
@@ -34,27 +71,30 @@ class ProfileScreen extends React.Component {
   render() {
     return (
       <View style={styles.main}>
+        <View style={styles.backgroundContainer}>
+          <Image style={styles.background} source={require('../assets/landingBG.jpg')} />
+        </View>
 
         <View style={styles.profileTextContainer}>
-        <Image style={styles.image} source={require('../assets/karl.jpg')}/>
-        <Text style={styles.profileTitle}>Karl Huang</Text>
+          <Image style={styles.image} source={!this.state.user ? null : profileIcons[this.state.user] ? profileIcons[this.state.user] : profileIcons["default"]}/>
+          <Text style={styles.userTitle}>{this.state.user}</Text>
         </View>
         <View style={styles.scoreBoardContainer}>
           <Text style={styles.accountTitle}>Account</Text>
         </View>
         <View style={styles.infoContainer}>
           <View style={styles.underline}>
-          <Text style={styles.infoText}>Score</Text>
+            <Text style={styles.infoText}>Score</Text>
           </View>
           <View style={styles.underline}>
-          <Text style={styles.infoText}>Language</Text>
+            <Text style={styles.infoText}>Language</Text>
           </View>
           <View style={styles.underline}>
-          <Text style={styles.infoText}>Location</Text>
+            <Text style={styles.infoText}>Location</Text>
           </View>
         </View>
         <View style={styles.logoutContainer}>
-          <Ripple rippleColor="#FFFFFF" rippleContainerBorderRadius={25} rippleOpacity={0.5} onPress={()=>setTimeout(this.logOut, 500)}>
+          <Ripple rippleColor="#FFFFFF" rippleContainerBorderRadius={25} rippleOpacity={0.5} onPress={()=>setTimeout(this.logout, 500)}>
           <Button title='Log Out'/>
           </Ripple>
         </View>
@@ -67,6 +107,16 @@ const styles=StyleSheet.create({
   main:{
     flex:1,
     backgroundColor:"white"
+  },
+  backgroundContainer: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    width: '100%',
+    height: '100%',
+  },
+  background: {
+    resizeMode: 'cover'
   },
 
   image:{

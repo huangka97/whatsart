@@ -71,7 +71,7 @@ class CameraScreen extends React.Component {
 //CAMERA FUNCTIONALITY
   snap = async () => {
     if (this.camera) {
-      this.camera.takePictureAsync({base64: true})
+      this.camera.takePictureAsync()
       .then(async ({ uri  })=> {
         this.setState({ currentImg: uri });
         const imgResult = await ImageManipulator.manipulate(this.state.currentImg, [{ resize: { width: 480 } }], { compress: 0, base64: true })

@@ -66,6 +66,10 @@ const artworkSchema = new Schema({
     default: '',
     type: String,
   },
+  summary: {
+    default: '',
+    type: String,
+  },
   imgURL: {
     default: '',
     type: String,
