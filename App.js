@@ -2,14 +2,13 @@ import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { createStackNavigator } from 'react-navigation';
 import { zoomIn, fadeIn, flipY } from 'react-navigation-transitions';
-import { Ionicons } from '@expo/vector-icons';
 
 // All Screen Components
 import LandingScreen from './Components/LandingScreen.js';
 import LoginScreen from './Components/LoginScreen.js';
 import SignupScreen from './Components/SignupScreen.js';
 import CameraScreen from './Components/CameraScreen.js';
-import ProfileScreen from './Components/ProfileScreen.js';
+import ProfileScreen from './Components/ProfileScreen.js'
 import CollectionScreen from './Components/CollectionScreen.js';
 
 // For Testing Purposes
@@ -23,7 +22,7 @@ const WhatsArt = createStackNavigator(
     Signup: { screen: SignupScreen },
     Camera: { screen: CameraScreen },
     Collection: { screen: CollectionScreen },
-    Profile: { screen: ProfileScreen },
+    UserProfile:{ screen: ProfileScreen },
     Test: { screen: TestScreen }, // Remove later, for testing purposes
   },
   {

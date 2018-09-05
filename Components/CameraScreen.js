@@ -1,8 +1,8 @@
 import React from 'react';
 import { StyleSheet, Text, View, Image, StatusBar } from 'react-native';
-import { Camera, Permissions } from 'expo';
+import { Camera, Permissions, ImageManipulator } from 'expo';
 import Ripple from 'react-native-material-ripple';
-//import config from "../config.json"
+import config from "../config.json"
 
 // To preview the image taken before deciding to process it
 import CameraScreenPreview from './CameraScreenPreview.js';
@@ -18,45 +18,53 @@ class CameraScreen extends React.Component {
       hasCameraPermission: null,
       type: Camera.Constants.Type.back,
       currentImg: null,
-      showInformationScreen:true,
+      showInformationScreen:false,
+      logoDetection:""
     };
   }
+
 
   // Wait for User to Give Permissions
   async componentWillMount() {
     const { status } = await Permissions.askAsync(Permissions.CAMERA);
     this.setState({ hasCameraPermission: status === 'granted' });
   }
+  stringSplit=(string)=>{
+    var newString=string.split(",")[0]
+    return newString;
+  }
 
   //API CALL TO GOOGLE Cloud
   async checkforLogos(base64){
-    return await
-    fetch(config.googleCloud.api+config.googleCloud.apiKey,{
-      method:'POST',
-      body:JSON.stringify({
-        "requests":[
-          {
-            "image":{
-              "content":base64
-            },
-            "features":[
+      return await
+      fetch(config.googleCloud.api+config.googleCloud.apiKey,{
+        method:'POST',
 
-              {
-                "type":"WEB_DETECTION",
-                maxResults:1,
-              }
-            ]
-          }
-        ]
+        body:JSON.stringify({
+          "requests":[
+            {
+              "image":{
+                "content":base64
+              },
+              "features":[
+                {
+                  "type":"LOGO_DETECTION",
+                  maxResults:1
+                }
+              ]
+            }
+          ]
+        })
+      }).then((response)=>{
+        // console.log("SUCCESS");
+        // console.log("THIS IS THE RESPONSE JSON: ", response.json())
+        return response.json();
+
+      }).catch((err)=>{
+        console.log("You done goofed fam",err);
       })
-    }).then((response)=>{
-      console.log("SUCCESS");
-      return response.json();
 
-    }).catch((err)=>{
-      console.log("You done goofed fam",err);
-    })
-  }
+    }
 
 
 
@@ -64,25 +72,17 @@ class CameraScreen extends React.Component {
   snap = async () => {
     if (this.camera) {
       this.camera.takePictureAsync({base64: true})
-      .then(async ({ uri, base64 })=> {
+      .then(async ({ uri  })=> {
         this.setState({ currentImg: uri });
-        console.log("THIS IS URI FAM BAM:", uri);
-        this.checkforLogos(base64)
-        .then((searchResult) => console.log(searchResult.responses))
-        .then((uri)=>fetch('http://10.2.103.5:3000/newart',{
-          method:"POST",
-          credentials:"same-origin",
-          headers:{
-            "Content-Type":"application/json"
-          },
-          body:JSON.stringify({
-            uri:this.state.currentImg
-          })
-        }))
+        const imgResult = await ImageManipulator.manipulate(this.state.currentImg, [{ resize: { width: 480 } }], { compress: 0, base64: true })
+        this.checkforLogos(imgResult.base64)
+        // .then((searchResult)=>console.log(searchResult))
+        .then((searchResult) => this.setState({logoDetection:this.stringSplit(searchResult.responses[0].logoAnnotations[0].description)},
+          ()=>console.log("THIS IS THE LOGO DETECTION:",this.state.logoDetection)))
         .catch((err)=>console.log("TOUGH FAM",err));
       });
     }
-  };
+  };  
 
   // To cancel the image and retake another picture
   handleCancel = () => {
@@ -90,8 +90,11 @@ class CameraScreen extends React.Component {
     this.setState({ currentImg: null });
   }
   toggleInformation=()=>{
-    this.setState({showInformationScreen:true});
+    console.log("TOGGLED");
+    this.setState({showInformationScreen:!this.state.showInformationScreen});
   }
+
+
 
   render() {
     const { hasCameraPermission } = this.state;
@@ -126,7 +129,7 @@ class CameraScreen extends React.Component {
           </Camera>
         </View>
       : !this.state.showInformationScreen? <CameraScreenPreview showInfo={this.toggleInformation} currentImg={this.state.currentImg} cancel={this.handleCancel}/>
-      :<InformationScreen/>
+      :<InformationScreen showInfo={this.toggleInformation} artName={this.state.logoDetection}/>
     )
 
 

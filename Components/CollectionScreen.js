@@ -3,16 +3,17 @@ import { StyleSheet, TouchableOpacity, Text, View, Image } from 'react-native';
 import { material, iOSColors, systemWeights } from 'react-native-typography';
 import { Avatar } from 'react-native-elements';
 import { MapView } from 'expo';
+import { Marker } from 'react-native-maps';
 
 class CollectionScreen extends React.Component {
   constructor(props){
     super(props);
     this.state={
       mode:"myCollection",
- //     showCollection:false,
       newUser:true,
       lat: 0,
-      long: 0
+      long: 0,
+      markers: []
     }
   }
   static navigationOptions = {
@@ -29,6 +30,22 @@ class CollectionScreen extends React.Component {
         })
       }
     )
+  //fetch latitude and longitude of museums name to display on map
+    fetch('http://10.2.103.54:3002/museums', {
+      method: 'GET',
+      credentials: 'same-origin'
+    })
+    .then(response => response.json())
+    .then((responseJson)	=> {
+      if (responseJson.success)
+      {
+        this.setState({markers: responseJson.markers});
+        console.log(this.state.markers);
+      }
+      else {
+        console.log("FAILURE!");
+      }
+    })
   }
 
 
@@ -71,18 +88,25 @@ class CollectionScreen extends React.Component {
             </View>
           )
       case 'myMap':
+        let markers = this.state.markers;
       	return (
           <MapView style = {{flex: 4}}
-             initialRegion = {{
-               latitude: this.state.lat,
-               longitude: this.state.long,
-               latitudeDelta: .5,
-               longitudeDelta: .25
-             }}
-          />
+            initialRegion = {{
+              latitude: this.state.lat,
+              longitude: this.state.long,
+              latitudeDelta: 40,
+              longitudeDelta: 20
+            }}
+          >
+            {markers.map((marker, index) => (
+              <Marker coordinate = {{latitude: parseFloat(marker.lat), longitude: parseFloat(marker.lng)}} key = {index} description = {this.state.museum} title = {marker.museum + ', ' + marker.city}>
+              </Marker>
+            ))}
+          <Marker coordinate = {{latitude: this.state.lat, longitude: this.state.long}} title = "Current location" key = "user">
+          </Marker>
+          </MapView>
       	);
       default: return null;
-
 		}
 	}
 
