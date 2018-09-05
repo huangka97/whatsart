@@ -57,7 +57,7 @@ class CollectionScreen extends React.Component {
 
   toggleScan() {
     this.setState({
-      mode:"myScans"
+      mode:"myFavorites"
     })
   }
 
@@ -78,13 +78,13 @@ class CollectionScreen extends React.Component {
             <Text>save it to your collection</Text>
           </View>
         );
-			case 'myScans':
+			case 'myFavorites':
           return (
             <View style={styles.createScanContainer}>
-              <Image style={styles.iconSize} source={require('../assets/photo_camera.png')}/>
-              <Text style={styles.textSize}>Start Snapping!</Text>
-              <Text>Once you get started you'll find all of your</Text>
-              <Text>previous photos here.</Text>
+              <Image style={styles.iconSize} source={require('../assets/heart.png')}/>
+              <Text style={styles.textSize}>View Your Favorites!</Text>
+              <Text>Once you favorite photos from your collection,</Text>
+              <Text>you'll find them here</Text>
             </View>
           )
       case 'myMap':
@@ -113,10 +113,11 @@ class CollectionScreen extends React.Component {
   render() {
     return (
       <View style={styles.mainContainer}>
-        <View style={styles.randoContainer}>
-        </View>
 
         <View style={styles.userContainer}>
+          <View style={styles.backgroundContainer}>
+            <Image style={styles.background} source={require('../assets/landingBG.jpg')} />
+          </View>
           <Image style={styles.image} source={require('../assets/karl.jpg')}/>
           <Text style={styles.userTitle}>Karl</Text>
         </View>
@@ -126,7 +127,7 @@ class CollectionScreen extends React.Component {
             <Text style={styles.collectionContainer}>My Collection </Text>
           </TouchableOpacity>
           <TouchableOpacity onPress={this.toggleScan.bind(this)}>
-            <Text style={styles.scansContainer}>My Scans</Text>
+            <Text style={styles.scansContainer}>My Favorites</Text>
           </TouchableOpacity>
           <TouchableOpacity onPress={this.toggleMap.bind(this)}>
             <Text style={styles.mapsContainer}>My Map</Text>
@@ -192,6 +193,16 @@ const styles=StyleSheet.create({
     backgroundColor:"grey",
     flexDirection:"row",
     alignItems:'center'
+  },
+  backgroundContainer: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    width: '100%',
+    height: '100%',
+  },
+  background: {
+    resizeMode: 'cover',
   },
   userTitle:{
     ...material.titleObject,
