@@ -88,7 +88,7 @@ class CollectionScreen extends React.Component {
 
   render() {
     return (
-      <View style={styles.main}>
+      <View style={styles.mainContainer}>
         <View style={styles.randoContainer}>
         </View>
 

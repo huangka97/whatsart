@@ -1,4 +1,3 @@
-import infobox from 'wiki-infobox';
 import wtf from 'wtf_wikipedia';
 import crypto from 'crypto';
 

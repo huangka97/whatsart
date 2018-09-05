@@ -23,11 +23,11 @@ const WhatsArt = createStackNavigator(
     Signup: { screen: SignupScreen },
     Camera: { screen: CameraScreen },
     Collection: { screen: CollectionScreen },
-    UserProfile:{screen: ProfileScreen},
+    Profile: { screen: ProfileScreen },
     Test: { screen: TestScreen }, // Remove later, for testing purposes
   },
   {
-    initialRouteName: 'Camera',
+    initialRouteName: 'Collection',
     navigationOptions: {
       headerStyle: {
         backgroundColor: '#1976D2',
