@@ -26,12 +26,14 @@ class InformationScreen extends React.Component {
       medium:"",
       dimensions:"",
       dateViewed:"",
-      screenHeight:0
+      screenHeight:0,
     }
   }
+componentDidMount(){
+    console.log("KEVIN NGUYENNN: ", this.props.artNameArray)
 
 
-  componentDidMount(){
+
     fetch('https://enigmatic-garden-90693.herokuapp.com/artwork', {
       method: "POST",
       credentials: "same-origin",
@@ -39,11 +41,12 @@ class InformationScreen extends React.Component {
         "Content-Type":"application/json"
       },
       body: JSON.stringify({
-        artworkName:this.props.artName
+        artworkName:this.props.artNameArray
       })
     })
     .then((resp) => resp.json())
     .then((response) => {
+      console.log(response)
       if (response.success) {
 
         this.setState({
@@ -67,6 +70,23 @@ class InformationScreen extends React.Component {
     .catch((err)=>console.log("ERROR:", err));
   }
 
+  rando=()=>{
+    console.log("ENTERED")
+    this.setState({
+      name:"",
+      artist:"",
+      imageUrl:"",
+      city:"",
+      year:"",
+      museum:"",
+      medium:"",
+      dimensions:"",
+      dateViewed:"",
+      screenHeight:0,
+    })
+    setTimeout(this.props.showInfo,500);
+  }
+
 
 
   render() {
@@ -83,7 +103,7 @@ class InformationScreen extends React.Component {
         </View>
         <View style={styles.filterContainer}>
           <View style={styles.titleContainer}>
-          <Ripple rippleColor="#FFFFFF" rippleContainerBorderRadius={25} rippleOpacity={0.5} onPress={()=>setTimeout(this.props.showInfo, 500)}>
+          <Ripple rippleColor="#FFFFFF" rippleContainerBorderRadius={25} rippleOpacity={0.5} onPress={this.rando}>
           <Entypo name="chevron-thin-left" size={50} color="white"/>
           </Ripple>
           </View>

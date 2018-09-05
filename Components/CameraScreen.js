@@ -19,7 +19,7 @@ class CameraScreen extends React.Component {
       type: Camera.Constants.Type.back,
       currentImg: null,
       showInformationScreen:false,
-      logoDetection:""
+      webEntitiesArray:[]
     };
   }
 
@@ -48,8 +48,8 @@ class CameraScreen extends React.Component {
               },
               "features":[
                 {
-                  "type":"LOGO_DETECTION",
-                  maxResults:1
+                  "type":"WEB_DETECTION",
+                  maxResults:3
                 }
               ]
             }
@@ -76,19 +76,20 @@ class CameraScreen extends React.Component {
         this.setState({ currentImg: uri });
         const imgResult = await ImageManipulator.manipulate(this.state.currentImg, [{ resize: { width: 480 } }], { compress: 0, base64: true })
         this.checkforLogos(imgResult.base64)
-        // .then((searchResult)=>console.log(searchResult))
-        .then((searchResult) => this.setState({logoDetection:this.stringSplit(searchResult.responses[0].logoAnnotations[0].description)},
-          ()=>console.log("THIS IS THE LOGO DETECTION:",this.state.logoDetection)))
+        // .then((searchResult)=>console.log(searchResult.responses[0].webDetection.webEntities))
+        .then((searchResult) => this.setState({webEntitiesArray:searchResult.responses[0].webDetection.webEntities.map((obj) => obj.description)}),
+          ()=>console.log("THIS IS THE WEB DETECTION:",this.state.webEntitiesArray))
         .catch((err)=>console.log("TOUGH FAM",err));
       });
     }
-  };  
+  };
 
   // To cancel the image and retake another picture
   handleCancel = () => {
     console.log('cancel')
     this.setState({ currentImg: null });
   }
+  
   toggleInformation=()=>{
     console.log("TOGGLED");
     this.setState({showInformationScreen:!this.state.showInformationScreen});
@@ -129,7 +130,7 @@ class CameraScreen extends React.Component {
           </Camera>
         </View>
       : !this.state.showInformationScreen? <CameraScreenPreview showInfo={this.toggleInformation} currentImg={this.state.currentImg} cancel={this.handleCancel}/>
-      :<InformationScreen showInfo={this.toggleInformation} artName={this.state.logoDetection}/>
+      :<InformationScreen showInfo={this.toggleInformation} artNameArray={this.state.webEntitiesArray}/>
     )
 
 
