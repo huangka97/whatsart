@@ -5,6 +5,13 @@ import Ripple from 'react-native-material-ripple';
 import { material, iOSColors, systemWeights, materialColors } from 'react-native-typography';
 import axios from 'axios';
 
+const profileIcons = {
+  Karl: require("../assets/karl.jpg"),
+  Kevin: require("../assets/kevin.jpeg"),
+  Kitan: require("../assets/kitan.jpg"),
+  default: require("../assets/defaultProfile.png")
+}
+
 class ProfileScreen extends React.Component {
   static navigationOptions = {
     header: null
@@ -13,6 +20,7 @@ class ProfileScreen extends React.Component {
   constructor(props){
     super(props);
     this.state={
+      user: '',
       name: '',
       score: '',
       newEmail: '',
@@ -21,6 +29,28 @@ class ProfileScreen extends React.Component {
       newPasswordRepeat: '',
     }
   }
+
+  componentDidMount() {
+    fetch('https://enigmatic-garden-90693.herokuapp.com/user', {
+      method: 'GET',
+      credentials: 'same-origin'
+    })
+    .then(response => {console.log("RESPONSE: ", response); return response.json()})
+    .then(responseJson => {
+      if (responseJson.success)
+      {
+        this.setState({user: responseJson.user.firstName});
+        this.setState({score: responseJson.user.userCollection.length});
+        console.log("GOT USER", this.state.user);
+      }
+      else
+      {
+        this.setState({user: "default"});
+        console.log("CAN'T GET PROFILE PIC");
+      }
+    })
+  }
+
 
   logout = () => {
     fetch('https://enigmatic-garden-90693.herokuapp.com/logout', {
@@ -48,21 +78,21 @@ class ProfileScreen extends React.Component {
         </View>
 
         <View style={styles.profileTextContainer}>
-          <Image style={styles.image} source={require('../assets/karl.jpg')}/>
-          <Text style={styles.profileTitle}>Karl Huang</Text>
+          <Image style={styles.image} source={!this.state.user ? null : profileIcons[this.state.user] ? profileIcons[this.state.user] : profileIcons["default"]}/>
+          <Text style={styles.userTitle}>{this.state.user}</Text>
         </View>
         <View style={styles.scoreBoardContainer}>
-          <Text style={styles.accountTitle}>Account</Text>
+          <Text style={styles.infoText}>Score: {this.state.score}</Text>
         </View>
         <View style={styles.infoContainer}>
           <View style={styles.underline}>
-            <Text style={styles.infoText}>Score</Text>
+            <Text style={styles.infoText}>Terms and Conditions</Text>
           </View>
           <View style={styles.underline}>
-            <Text style={styles.infoText}>Language</Text>
+            <Text style={styles.infoText}>Privacy Policy</Text>
           </View>
           <View style={styles.underline}>
-            <Text style={styles.infoText}>Location</Text>
+            <Text style={styles.infoText}>Credits</Text>
           </View>
         </View>
         <View style={styles.logoutContainer}>
@@ -116,7 +146,8 @@ const styles=StyleSheet.create({
     flex:0.8,
     backgroundColor:iOSColors.customGray,
     flexDirection:"column",
-    justifyContent:'center'
+    justifyContent:'center',
+    alignItems: "center"
 
   },
   accountTitle:{
