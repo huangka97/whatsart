@@ -22,7 +22,6 @@ class LandingScreen extends React.Component {
             isLooping
             style={styles.video}
           />
-
           <View style={styles.titleContainer}>
             <Image source={require('../assets/whatsartIcon.png')} style={styles.titleIcon} />
             <Animatable.Text animation="fadeInDown" iterationCount={1} delay={0}

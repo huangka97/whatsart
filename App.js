@@ -10,9 +10,6 @@ import CameraScreen from './Components/CameraScreen.js';
 import ProfileScreen from './Components/ProfileScreen.js'
 import CollectionScreen from './Components/CollectionScreen.js';
 
-// For Testing Purposes
-import TestScreen from './Components/TestScreen.js';
-
 // For Navigation Between Screens
 const WhatsArt = createStackNavigator(
   {
@@ -21,10 +18,9 @@ const WhatsArt = createStackNavigator(
     Camera: { screen: CameraScreen },
     Collection: { screen: CollectionScreen },
     Profile: { screen: ProfileScreen },
-    Test: { screen: TestScreen }, // Remove later, for testing purposes
   },
   {
-    initialRouteName: 'Landing',
+    initialRouteName: 'Camera',
     navigationOptions: {
       headerStyle: {
         backgroundColor: '#1976D2',
