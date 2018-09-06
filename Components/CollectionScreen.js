@@ -45,7 +45,7 @@ class CollectionScreen extends React.Component {
     }).then(response => response.json()).then((responseJson) => {
       if (responseJson.success) {
         this.setState({markers: responseJson.markers});
-        console.log(this.state.markers);
+        console.log("THIS IS AMERICA: ",this.state.markers);
       } else {
         console.log("FAILURE!");
       }
@@ -55,7 +55,7 @@ class CollectionScreen extends React.Component {
       method: 'GET',
       credentials: 'same-origin'
     }).then(response => {
-      console.log("RESPONSE: ", response);
+      // console.log("RESPONSE: ", response);
       return response.json()
     }).then(responseJson => {
       if (responseJson.success) {
@@ -80,6 +80,9 @@ class CollectionScreen extends React.Component {
   toggleMap() {
     this.setState({mode: "myMap"})
   }
+  // togglePhotoGrind(){
+  //   this.setState({subMode:"myPhotogrid"})
+  // }
 
   getModeRender = (mode) => {
     switch (mode) {
@@ -117,7 +120,7 @@ class CollectionScreen extends React.Component {
 
           /*render all photos in a grid pattern*/
           <View style={styles.gridContainer}>
-            <BestGrid score = {this.state.numFavorites} header={this.state.favoriteHeader}/>
+            <BestGrid score = {this.state.numFavorites} header={this.state.favoriteHeader} artworkArray={this.state.markers}/>
           </View>
 
           /* render all photos in a grid pattern */

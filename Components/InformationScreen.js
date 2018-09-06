@@ -31,9 +31,6 @@ class InformationScreen extends React.Component {
   }
 componentDidMount(){
     console.log("KEVIN NGUYENNN: ", this.props.artNameArray)
-
-
-
     fetch('https://enigmatic-garden-90693.herokuapp.com/artwork', {
       method: "POST",
       credentials: "same-origin",
@@ -57,7 +54,7 @@ componentDidMount(){
           year:response.artworkInfo.year,
           museum:response.artworkInfo.museum,
           medium:response.artworkInfo.medium,
-          summary:response.artworkInfo.summary,
+          summary:response.artworkInfo.summary,   
           dimensions:response.artworkInfo.dimensions,
           dateViewed:response.artworkInfo.dateViewed,
 
