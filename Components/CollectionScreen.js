@@ -201,7 +201,6 @@ const styles=StyleSheet.create({
   },
   createGridCollectionContainer:{
     flex:4,
-
   },
   createScanContainer:{
     flex:4,
