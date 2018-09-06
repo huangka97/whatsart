@@ -23,8 +23,6 @@ class CameraScreen extends React.Component {
       currentImg: null,
       showInformationScreen: false,
       webEntitiesArray: [],
-      cameraFrameVisible: true,
-      cameraIntervalId: '',
     };
   }
 
@@ -34,8 +32,15 @@ class CameraScreen extends React.Component {
     this.setState({ hasCameraPermission: status === 'granted' });
   }
 
+  frameAnimation = () => {
+    return new Promise((resolve, reject) => {
+      this.setState({ cameraFrameVisible: true }, () =>{ this.frame.reset(); this.frame.play(); });
+      setTimeout(()=>resolve('Animation done!'), 450);
+    })
+  }
+
   // Google Vision API Call
-  async checkforLogos(base64){
+  async checkforLogos(base64) {
       return await
       axios.post(config.googleCloud.api+config.googleCloud.apiKey, {
         "requests":[{
@@ -50,7 +55,7 @@ class CameraScreen extends React.Component {
       })
       .then(({ data: { responses } }) => {
         const googleVisionResults = responses[0].webDetection.webEntities.map(obj => obj.description);
-        this.setState({ webEntitiesArray: googleVisionResults });
+        this.setState({ webEntitiesArray: googleVisionResults }, ()=>console.log(this.state.webEntitiesArray));
         return Promise.resolve();
       })
       .catch(err => console.log('Google Vision API ERROR:', err));
@@ -59,37 +64,30 @@ class CameraScreen extends React.Component {
   // Camera Functionality
   snap = async () => {
     if (this.camera) {
-      this.camera.takePictureAsync({ quality: 1 })
-      .then(async ({ uri }) => {
-        //this.camera.pausePreview();
-        this.setState({ currentImg: uri });
-        const imgResult = await ImageManipulator.manipulate(this.state.currentImg, [{ resize: { width: 480 } }], { compress: 0, base64: true })
-        this.checkforLogos(imgResult.base64)
-        .then(resp => console.log(resp))
-        .then(() => console.log(this.state.webEntitiesArray));
+      this.frameAnimation()
+      .then(() => {
+        this.camera.takePictureAsync({ quality: 1 })
+        .then(async ({ uri }) => {
+          this.setState({ currentImg: uri });
+          const imgResult = await ImageManipulator.manipulate(this.state.currentImg, [{ resize: { width: 480 } }], { compress: 0, base64: true })
+          this.checkforLogos(imgResult.base64)
+          .then(resp => console.log(resp))
+          .then(() => console.log(this.state.webEntitiesArray));
+        });
       });
     }
   };
-
-  // Toggle Camera Frame Visbility
-  toggleCameraFrame = () => {
-    this.setState({ cameraFrameVisible: !this.state.cameraFrameVisible });
-  }
-
-  // Camera Frame Blinking Interval
-  
 
   // Cancel Image
   handleCancel = () => {
     console.log('cancel')
     this.setState({ currentImg: null });
-    this.camera.resumePreview();
   }
 
   // Toogle InformationScreen
   toggleInformation=()=>{
     console.log("TOGGLED");
-    this.setState({showInformationScreen:!this.state.showInformationScreen});
+    this.setState({ showInformationScreen: !this.state.showInformationScreen });
   }
 
   render() {
@@ -112,7 +110,7 @@ class CameraScreen extends React.Component {
                   <Image style={styles.iconSize} source={require('../assets/guest.png')} />
                 </Ripple>
               </View>
-              {!this.state.cameraFrameVisible ? null : <LottieView source={require('../assets/focus.json')} speed={0.6} style={{ width: 800, alignSelf: 'center' }} />}
+              <LottieView ref={ref => this.frame = ref} source={require('../assets/focus.json')} speed={2} style={{ width: 800, alignSelf: 'center' }} />
               <View style={styles.bottomBarContainer}>
                 <Ripple rippleColor="#FFFFFF" rippleContainerBorderRadius={15} onPress={()=>this.props.navigation.navigate("Collection")}>
                   <Image style={styles.iconSize} source={require('../assets/collections.png')} />

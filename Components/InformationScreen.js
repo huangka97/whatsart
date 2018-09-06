@@ -31,8 +31,6 @@ class InformationScreen extends React.Component {
 componentDidMount(){
     console.log("KEVIN NGUYENNN: ", this.props.artNameArray)
 
-
-
     fetch('https://enigmatic-garden-90693.herokuapp.com/artwork', {
       method: "POST",
       credentials: "same-origin",
@@ -103,7 +101,7 @@ componentDidMount(){
         <View style={styles.filterContainer}>
           <View style={styles.titleContainer}>
           <Ripple rippleColor="#FFFFFF" rippleContainerBorderRadius={25} rippleOpacity={0.5} onPress={this.rando}>
-          <Entypo name="chevron-thin-left" size={50} color="white"/>
+          <Entypo name="chevron-thin-left" size={30} color="white"/>
           </Ripple>
           </View>
           <View style={styles.innerImageContainer}>
@@ -113,7 +111,7 @@ componentDidMount(){
             <Text style={{color:iOSColors.white,fontSize:30,...systemWeights.light}}>
               {this.state.name}
             </Text>
-            <Text style={{color:iOSColors.white,fontSize:18,...systemWeights.bold,textDecorationLine:'underline',textDecorationColor:'white',textDecorationStyle:"solid"}}>
+            <Text style={{color:iOSColors.white, fontSize:18, ...systemWeights.bold,textDecorationLine: 'underline',textDecorationColor: 'white',textDecorationStyle: "solid"}}>
               {this.state.artist}
             </Text>
             <Text style={{color:iOSColors.white,fontSize:15,...systemWeights.semibold}}>
@@ -143,25 +141,20 @@ const styles = StyleSheet.create({
   },
   image: {
     flex: 1,
-    width: 140,
-    height: 140,
+    width: 300,
     resizeMode: 'contain',
-
-    opacity:1,
+    marginBottom: 20,
   },
-
   imageContainer: {
     alignItems: "center",
   },
   backgroundImage:{
     position:"absolute",
-
   },
   innerImageContainer:{
     flex:2.2,
     justifyContent:'center',
     alignItems:'center'
-
   },
   info:{
     color:iOSColors.white
