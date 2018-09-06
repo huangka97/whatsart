@@ -1,6 +1,6 @@
 import React from 'react';
 import PhotoGrid from 'react-native-image-grid';
-
+import axios from 'axios';
 import { StyleSheet, TouchableOpacity, Text, View, Image } from 'react-native';
 
 class BestGrid extends React.Component {
@@ -8,7 +8,8 @@ class BestGrid extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      items: []
+      items: [],
+      artworkSource:[]
     }
   }
   static navigationOptions = {
@@ -17,10 +18,17 @@ class BestGrid extends React.Component {
 
   componentDidMount() {
     // Build an array of 60 photos
+    this.setState({
+      artworkSource:this.props.artworkArray
+    })
+    console.log("HELLO: ",this.state.artworkSource)
+    if(this.state.artworkSource.length > 0){
     let items = Array.apply(null, Array(this.props.score)).map((v, i) => {
-      return { id: i, src: 'http://placehold.it/200x200?text='+(i+1) }
+      return { id: i, src: this.state.artworkSource[i].imgURL }
     });
     this.setState({ items });
+    }
+
   }
 
   render() {
