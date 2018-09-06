@@ -20,8 +20,8 @@ class CollectionScreen extends React.Component {
     this.state = {
       mode: "myCollection",
       score: 5,
-      newUser: true,
-      numFavorites: 6,
+      numFavorites: 2,
+      newUser:true,
       user: "",
       lat: 0,
       long: 0,
@@ -95,20 +95,28 @@ class CollectionScreen extends React.Component {
 
           :
 
-          /* render all photos in a grid pattern */
-          <BestGrid score={this.state.score} style={styles.createGridCollectionContainer}/>);
-      case 'myFavorites':
-        return (
-          this.state.numFavorites == ""
-          ? //should test for 0 after componentDidMount
-          <View style={styles.createScanContainer}>
-            <Image style={styles.iconSize} source={require('../assets/heart.png')}/>
-            <Text style={styles.textSize}>View Your Favorites!</Text>
-            <Text>Once you favorite photos from your collection,</Text>
-            <Text>you'll find them here</Text>
+          /*render all photos in a grid pattern*/
+          <View style={styles.gridContainer}>
+            <BestGrid score={this.state.score}/>
           </View>
 
+        );
+			case 'myFavorites':
+          return (
+            this.state.numFavorites == "" ?//should test for 0 after componentDidMount
+            <View style={styles.createScanContainer}>
+              <Image style={styles.iconSize} source={require('../assets/heart.png')}/>
+              <Text style={styles.textSize}>View Your Favorites!</Text>
+              <Text>Once you favorite photos from your collection,</Text>
+              <Text>you'll find them here</Text>
+            </View>
+
           :
+
+          /*render all photos in a grid pattern*/
+          <View style={styles.gridContainer}>
+            <BestGrid score = {this.state.numFavorites}/>
+          </View>
 
           /* render all photos in a grid pattern */
           <BestGrid score={this.state.numFavorites}/>)
@@ -174,10 +182,16 @@ const styles = StyleSheet.create({
   mainContainer: {
     flex: 1
   },
-  scanandcollectionContainer: {
-    justifyContent: "space-around",
-    backgroundColor: iOSColors.grey,
-    flex: 1,
+  gridContainer:{
+    justifyContent:"space-around",
+    backgroundColor:iOSColors.grey,
+    flex:4,
+    alignItems: "center",
+  },
+  scanandcollectionContainer:{
+    justifyContent:"space-around",
+    backgroundColor:iOSColors.grey,
+    flex:1,
     flexDirection: "row",
     marginTop: 10
   },
