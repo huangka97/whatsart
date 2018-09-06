@@ -5,6 +5,8 @@ import { TextField } from 'react-native-material-textfield';
 import { Video, AuthSession } from 'expo';
 import axios from 'axios';
 
+import SignupScreen from './SignupScreen.js';
+
 class LoginScreen extends React.Component {
   static navigationOptions = {
     header: null
@@ -18,6 +20,7 @@ class LoginScreen extends React.Component {
       error: false,
       twitterRequestToken: '',
       twitterRequestTokenSecret: '',
+      modalOpen: false,
     }
   }
 
@@ -81,6 +84,10 @@ class LoginScreen extends React.Component {
     }
   }
 
+  toggleSignupModal = () => {
+    this.setState({ modalOpen: !this.state.modalOpen });
+  }
+
   render() {
     return (
       <View style={styles.mainContainer}>
@@ -138,9 +145,10 @@ class LoginScreen extends React.Component {
           <SocialIcon title='Sign In With Twitter' button type='twitter' onPress={this.twitterLogin} />
           <Text style={styles.noAccountText}>
             Don't have an account?
-            <Text style={{ fontWeight: "bold" }} onPress={()=>this.props.navigation.navigate("Signup")}> Sign up!</Text>
+            <Text style={{ fontWeight: "bold" }} onPress={this.toggleSignupModal}> Sign up!</Text>
           </Text>
         </View>
+        <SignupScreen isOpen={this.state.modalOpen} onCancel={this.toggleSignupModal} />
       </View>
     );
   }

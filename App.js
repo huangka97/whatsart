@@ -6,7 +6,6 @@ import { zoomIn, fadeIn, flipY, fromLeft } from 'react-navigation-transitions';
 // All Screen Components
 import LandingScreen from './Components/LandingScreen.js';
 import LoginScreen from './Components/LoginScreen.js';
-import SignupScreen from './Components/SignupScreen.js';
 import CameraScreen from './Components/CameraScreen.js';
 import ProfileScreen from './Components/ProfileScreen.js'
 import CollectionScreen from './Components/CollectionScreen.js';
@@ -19,7 +18,6 @@ const WhatsArt = createStackNavigator(
   {
     Landing: { screen: LandingScreen },
     Login: { screen: LoginScreen },
-    Signup: { screen: SignupScreen },
     Camera: { screen: CameraScreen },
     Collection: { screen: CollectionScreen },
     Profile: { screen: ProfileScreen },

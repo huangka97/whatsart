@@ -3,6 +3,7 @@ import { StyleSheet, Text, View, Image, TouchableOpacity, StatusBar, Platform } 
 import { TextField } from 'react-native-material-textfield';
 import { Button, Divider } from 'react-native-elements';
 import { Video } from 'expo';
+import Modal from 'react-native-modalbox';
 import axios from 'axios';
 
 class SignupScreen extends React.Component {
@@ -23,26 +24,17 @@ class SignupScreen extends React.Component {
 
   handleSignup = () => {
     const { email, firstName, lastName, password, repeatPassword } = this.state;
-    if ((email && firstName && lastName && password
-        && repeatPassword && password === repeatPassword))
+    if ((email && firstName && lastName && password && repeatPassword && password === repeatPassword))
     {
-      fetch('https://enigmatic-garden-90693.herokuapp.com/signup', {
-        method: "POST",
-        credentials: "same-origin",
-        headers: {
-          "Content-Type":"application/json"
-        },
-        body: JSON.stringify({
-          email: email,
-          firstName: firstName,
-          lastName: lastName,
-          password: password,
-        })
+      axios.post('https://enigmatic-garden-90693.herokuapp.com/signup', {
+        email: email,
+        firstName: firstName,
+        lastName: lastName,
+        password: password,
       })
-      .then((resp) => resp.json())
-      .then((response) => {
-        if (response.success) {
-          this.props.navigation.navigate("Login");
+      .then(({ data }) => {
+        if (data.success) {
+          this.props.onCancel();
         }
         else {
           console.log('implement later');
@@ -54,7 +46,7 @@ class SignupScreen extends React.Component {
 
   render() {
     return (
-      <View style={styles.mainContainer}>
+      <Modal isOpen={this.props.isOpen} animationDuration={800} style={styles.mainContainer}>
         <Video
           source={require('../assets/spiral.mp4')}
           resizeMode="cover"
@@ -64,9 +56,9 @@ class SignupScreen extends React.Component {
         />
         <View style={styles.titleContainer}>
           <Text style={styles.title}>Sign Up</Text>
-          <Divider style={{ width: '75%', backgroundColor: 'black', marginTop: 10 }} />
+          <Divider style={styles.titleDivider} />
         </View>
-        <View style={{ flex: 4, marginTop: 30, paddingHorizontal: 30 }}>
+        <View style={styles.formContainer}>
           <TextField
             label='First Name'
             value={this.state.firstName}
@@ -117,18 +109,17 @@ class SignupScreen extends React.Component {
             title='Sign Up'
             backgroundColor='#4DB6AC'
           />
-          <TouchableOpacity onPress={()=>this.props.navigation.navigate("Login")}>
-            <Text style={{ alignSelf: 'center', marginTop: 16,  fontSize: 16 }}>Cancel</Text>
+          <TouchableOpacity onPress={this.props.onCancel}>
+            <Text style={styles.cancelText}>Cancel</Text>
           </TouchableOpacity>
         </View>
-      </View>
+      </Modal>
     );
   }
 }
 
 const styles = StyleSheet.create({
   mainContainer: {
-    backgroundColor: 'white',
     flex: 1,
   },
   video: {
@@ -146,6 +137,21 @@ const styles = StyleSheet.create({
     fontSize: 60,
     fontFamily: Platform.OS === 'ios' ? 'Marker Felt' : 'sans-serif',
     color: 'black',
+  },
+  titleDivider: {
+    width: '75%',
+    backgroundColor: 'black',
+    marginTop: 10 ,
+  },
+  formContainer: {
+    flex: 4,
+    marginTop: 30,
+    paddingHorizontal: 30,
+  },
+  cancelText: {
+    alignSelf: 'center',
+    marginTop: 16,
+    fontSize: 16,
   },
 });
 
