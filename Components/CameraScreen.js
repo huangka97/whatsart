@@ -66,13 +66,12 @@ class CameraScreen extends React.Component {
 
     }
 
-
-
 //CAMERA FUNCTIONALITY
   snap = async () => {
     if (this.camera) {
-      this.camera.takePictureAsync({base64: true})
-      .then(async ({ uri  })=> {
+      this.camera.takePictureAsync({ quality: 0, onPictureSaved: this.snapProcess })
+      .then(async ({ uri })=> {
+        this.camera.pausePreview();
         this.setState({ currentImg: uri });
         const imgResult = await ImageManipulator.manipulate(this.state.currentImg, [{ resize: { width: 480 } }], { compress: 0, base64: true })
         this.checkforLogos(imgResult.base64)
@@ -82,19 +81,18 @@ class CameraScreen extends React.Component {
         .catch((err)=>console.log("TOUGH FAM",err));
       });
     }
-  };  
+  };
 
   // To cancel the image and retake another picture
   handleCancel = () => {
     console.log('cancel')
     this.setState({ currentImg: null });
+    this.camera.resumePreview();
   }
   toggleInformation=()=>{
     console.log("TOGGLED");
     this.setState({showInformationScreen:!this.state.showInformationScreen});
   }
-
-
 
   render() {
     const { hasCameraPermission } = this.state;
@@ -112,7 +110,7 @@ class CameraScreen extends React.Component {
           <Camera style={styles.main} type={this.state.type} ref={ref => {this.camera = ref;}}>
             <View style={styles.cameraViewContainer}>
               <View style={styles.topBarContainer}>
-                <Ripple rippleColor="#FFFFFF" rippleContainerBorderRadius={15} onPress={()=>this.props.navigation.navigate('UserProfile')}>
+                <Ripple rippleColor="#FFFFFF" rippleContainerBorderRadius={15} onPress={()=>this.props.navigation.navigate('Profile')}>
                   <Image style={styles.iconSize} source={require('../assets/guest.png')} />
                 </Ripple>
               </View>
@@ -129,7 +127,7 @@ class CameraScreen extends React.Component {
           </Camera>
         </View>
       : !this.state.showInformationScreen? <CameraScreenPreview showInfo={this.toggleInformation} currentImg={this.state.currentImg} cancel={this.handleCancel}/>
-      :<InformationScreen showInfo={this.toggleInformation} artName={this.state.logoDetection}/>
+      :<InformationScreen showInfo={this.toggleInformation} artName={[this.state.logoDetection]}/>
     )
 
 

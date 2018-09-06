@@ -1,8 +1,9 @@
 import React from 'react';
-import { StyleSheet, Text, View, Image, StatusBar, Platform } from 'react-native';
-import { FormLabel, FormInput, FormValidationMessage } from 'react-native-elements';
+import { StyleSheet, Text, View, Image, Alert, Platform } from 'react-native';
 import { SocialIcon, Divider, Button } from 'react-native-elements';
-import { Video } from 'expo';
+import { TextField } from 'react-native-material-textfield';
+import { Video, AuthSession } from 'expo';
+import axios from 'axios';
 
 class LoginScreen extends React.Component {
   static navigationOptions = {
@@ -14,84 +15,130 @@ class LoginScreen extends React.Component {
     this.state = {
       email: '',
       password: '',
-      invalidLogin: false,
+      error: false,
+      twitterRequestToken: '',
+      twitterRequestTokenSecret: '',
     }
+  }
+
+  componentDidMount() {
+    axios.get(`https://enigmatic-garden-90693.herokuapp.com/twitterRequestToken?callbackURL=${encodeURIComponent(AuthSession.getRedirectUrl())}`)
+    .then(({ data }) => {
+      this.setState({ twitterRequestToken: data.requestToken, twitterRequestTokenSecret: data.requestTokenSecret });
+    });
   }
 
   handleLogin = () => {
     const { email, password } = this.state;
     if (email && password) {
-      fetch('http://10.2.103.54:3000/login', {
-        method: "POST",
-        credentials: "same-origin",
-        headers: {
-          "Content-Type":"application/json"
-        },
-        body: JSON.stringify({
-          email: email,
-          password: password,
-        })
+      axios.post('https://enigmatic-garden-90693.herokuapp.com/login', {
+        email: email,
+        password: password,
       })
-      .then((resp) => resp.json())
       .then((response) => {
-        if (response.success) {
-          
+        if (response.data.success) {
           this.props.navigation.navigate("Camera");
         }
-        else {
-          console.log('implement later');
-        }
       })
-      .catch((err)=>console.log("ERROR:", err));
+      .catch((err)=>{
+        console.log("ERROR:", err);
+        this.setState({ error: true });
+      });
+    }
+  }
+
+  facebookLogin = async () => {
+    const { type, token } = await Expo.Facebook.logInWithReadPermissionsAsync('2159152801010115', {
+      permissions: ['public_profile', 'email'],
+    });
+    if (type === 'success') {
+      axios.post(`https://enigmatic-garden-90693.herokuapp.com/facebookLogin?access_token=${token}`)
+      .then((resp) => {
+        console.log(`${resp.data.firstName} has logged in!`);
+        this.props.navigation.navigate("Camera");
+      })
+    }
+  }
+
+  twitterLogin = async () => {
+    const { type, params } = await AuthSession.startAsync({
+      authUrl: `https://twitter.com/oauth/authenticate?oauth_token=${this.state.twitterRequestToken}`
+    });
+    if (type === 'success') {
+      axios.post('https://enigmatic-garden-90693.herokuapp.com/twitterOAuth', {
+        requestToken: this.state.twitterRequestToken,
+        requestTokenSecret: this.state.twitterRequestTokenSecret,
+        oauth_verifier: params.oauth_verifier,
+      })
+      .then(({ data }) => {
+        // Save Twitter Access Tokens if Using Other Twitter Functionalities (Tweets, Followers, etc.)
+        return axios.get(`https://enigmatic-garden-90693.herokuapp.com/twitterLogin?oauth_token=${data.accessToken}&oauth_token_secret=${data.accessTokenSecret}&user_id=${data.user_id}`);
+      })
+      .then((resp) => {
+        console.log(`${resp.data.firstName} has logged in!`);
+        this.props.navigation.navigate("Camera");
+      })
     }
   }
 
   render() {
     return (
       <View style={styles.mainContainer}>
-        <StatusBar barStyle='dark-content' />
         <Video
           source={require('../assets/spiral.mp4')}
-          volume={1.0}
-          isMuted={false}
           resizeMode="cover"
           shouldPlay
           isLooping
-          style={{ position: 'absolute', width: '100%', height: '100%', opacity: 0.8 }}
+          style={styles.video}
         />
         <View style={styles.titleContainer}>
           <Text style={styles.title}>Sign In</Text>
-          <Divider style={{ width: '75%', backgroundColor: 'black', marginTop: 20 }} />
+          <Divider style={styles.titleDivider} />
         </View>
-        <View style={{ flex: 4, justifyContent: 'flex-end', }}>
-          <FormLabel labelStyle={{ color: 'black' }}>Email</FormLabel>
-          <FormInput onChangeText={(email)=>this.setState({ email })} autoCapitalize='none' containerStyle={{ borderBottomColor: 'black' }}/>
-          { !this.state.invalidLogin ? null : <FormValidationMessage>Invalid username or password.</FormValidationMessage>}
-          <FormLabel labelStyle={{ color: 'black' }}>Password</FormLabel>
-          <FormInput onChangeText={(password)=>this.setState({ password })} secureTextEntry containerStyle={{ borderBottomColor: 'black' }}/>
-          { !this.state.invalidLogin ? null : <FormValidationMessage>Invalid username or password.</FormValidationMessage>}
-          <Text style={{ alignSelf: 'center', fontSize: 14, color: 'black', marginTop: 10 }}>Forgot Password?</Text>
+        <View style={styles.normalLoginContainer}>
+          <TextField
+            label='Email'
+            value={this.state.email}
+            onChangeText={(email)=>this.setState({ email })}
+            textColor="black"
+            baseColor="black"
+            tintColor="rgb(0, 44, 178)"
+            autoCapitalize='none'
+            error={!this.state.error ? '' : 'Invalid Email or Password'}
+          />
+          <TextField
+            label='Password'
+            value={this.state.password}
+            onChangeText={(password)=>this.setState({ password })}
+            textColor="black"
+            baseColor="black"
+            tintColor="rgb(0, 44, 178)"
+            autoCapitalize='none'
+            secureTextEntry
+            error={!this.state.error ? '' : 'Invalid Email or Password'}
+          />
+          <Text style={styles.forgotPassword}>Forgot Password?</Text>
           <Button
             onPress={this.handleLogin}
-            containerViewStyle={{ marginTop: 20 }}
+            containerViewStyle={{ marginTop: 10 }}
             borderRadius={30}
             title='Sign In'
             backgroundColor='#4DB6AC'
           />
         </View>
-        <View style={{ flex: 1, justifyContent: 'center', }}>
-          <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
-            <Divider style={{ width: '35%', backgroundColor: 'black' }} />
+        <View style={styles.orDividerContainer}>
+          <View style={styles.orDividerRow}>
+            <Divider style={styles.orDivider} />
             <Text> or </Text>
-            <Divider style={{ width: '35%', backgroundColor: 'black' }} />
+            <Divider style={styles.orDivider} />
           </View>
         </View>
-        <View style={{ flex: 4, }}>
-          <SocialIcon title='Sign In With Facebook' button type='facebook' />
-          <SocialIcon title='Sign In With Twitter' button type='twitter' />
-          <Text style={{ alignSelf: 'center', fontSize: 14, color: 'black', marginTop: 10 }}>
+        <View style={styles.socialButtonsContainer}>
+          <SocialIcon title='Sign In With Facebook' button type='facebook' onPress={this.facebookLogin} style={{ marginTop: 0 }} />
+          <SocialIcon title='Sign In With Twitter' button type='twitter' onPress={this.twitterLogin} />
+          <Text style={styles.noAccountText}>
             Don't have an account?
-            <Text style={{fontWeight: "bold"}} onPress={()=>this.props.navigation.navigate("Signup")}> Sign up!</Text>
+            <Text style={{ fontWeight: "bold" }} onPress={()=>this.props.navigation.navigate("Signup")}> Sign up!</Text>
           </Text>
         </View>
       </View>
@@ -104,15 +151,60 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     flex: 1,
   },
+  video: {
+    position: 'absolute',
+    width: '100%',
+    height: '100%',
+    opacity: 0.8,
+  },
   titleContainer: {
     flex: 3,
-    justifyContent: 'flex-end',
+    justifyContent: 'center',
     alignItems: 'center',
   },
   title: {
     fontSize: 60,
     fontFamily: Platform.OS === 'ios' ? 'Marker Felt' : 'sans-serif',
     color: 'black',
+  },
+  titleDivider: {
+    width: '75%',
+    backgroundColor: 'black',
+    marginTop: 10,
+  },
+  normalLoginContainer: {
+    flex: 3,
+    justifyContent: 'flex-end',
+    paddingHorizontal: 30,
+  },
+  forgotPassword: {
+    alignSelf: 'center',
+    fontSize: 14,
+    color: 'black',
+    marginTop: 0,
+  },
+  noAccountText: {
+    alignSelf: 'center',
+    fontSize: 14,
+    color: 'black',
+    marginTop: 10,
+  },
+  orDivider: {
+    width: '35%',
+    backgroundColor: 'black',
+  },
+  orDividerRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  orDividerContainer: {
+    flex: .5,
+    justifyContent: 'center',
+  },
+  socialButtonsContainer: {
+    flex: 4,
+    paddingHorizontal: 40,
   },
 });
 

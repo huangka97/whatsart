@@ -1,8 +1,9 @@
 import React from 'react';
-import { TouchableOpacity, StyleSheet, Text, View, Image, StatusBar, Platform } from 'react-native';
+import { TouchableOpacity, StyleSheet, Text, View, Image, Platform } from 'react-native';
 import { Button, Avatar } from 'react-native-elements';
 import Ripple from 'react-native-material-ripple';
 import { material, iOSColors, systemWeights, materialColors } from 'react-native-typography';
+import axios from 'axios';
 
 class ProfileScreen extends React.Component {
   static navigationOptions = {
@@ -22,7 +23,7 @@ class ProfileScreen extends React.Component {
   }
 
   logout = () => {
-    fetch('http://10.2.103.54:3000/logout', {
+    fetch('https://enigmatic-garden-90693.herokuapp.com/logout', {
       method:"GET",
       credentials: "same-origin",
       headers: {
