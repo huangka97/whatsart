@@ -20,6 +20,8 @@ class CollectionScreen extends React.Component {
     this.state = {
       mode: "myCollection",
       score: 5,
+      favoriteHeader:"FAVORITES",
+      collectionHeader:"COLLECTION",
       numFavorites: 2,
       newUser:true,
       user: "",
@@ -97,7 +99,7 @@ class CollectionScreen extends React.Component {
 
           /*render all photos in a grid pattern*/
           <View style={styles.gridContainer}>
-            <BestGrid score={this.state.score}/>
+            <BestGrid score={this.state.score} header={this.state.collectionHeader}/>
           </View>
 
         );
@@ -115,11 +117,11 @@ class CollectionScreen extends React.Component {
 
           /*render all photos in a grid pattern*/
           <View style={styles.gridContainer}>
-            <BestGrid score = {this.state.numFavorites}/>
+            <BestGrid score = {this.state.numFavorites} header={this.state.favoriteHeader}/>
           </View>
 
           /* render all photos in a grid pattern */
-          <BestGrid score={this.state.numFavorites}/>)
+          )
       case 'myMap':
         let markers = this.state.markers;
         return (<MapView style={{

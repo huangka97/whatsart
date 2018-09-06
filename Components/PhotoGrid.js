@@ -25,6 +25,8 @@ class BestGrid extends React.Component {
 
   render() {
     return(
+      <View><Text>{this.props.header}</Text>
+
       <PhotoGrid
         data = { this.state.items }
         itemsPerRow = { 3 }
@@ -33,6 +35,7 @@ class BestGrid extends React.Component {
         renderHeader = { this.renderHeader }
         renderItem = { this.renderItem }
       />
+      </View>
     );
   }
 
