@@ -26,7 +26,7 @@ const WhatsArt = createStackNavigator(
     Test: { screen: TestScreen }, // Remove later, for testing purposes
   },
   {
-    initialRouteName: 'Login',
+    initialRouteName: 'Collection',
     navigationOptions: {
       headerStyle: {
         backgroundColor: '#1976D2',

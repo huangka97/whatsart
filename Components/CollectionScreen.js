@@ -5,6 +5,8 @@ import { Avatar } from 'react-native-elements';
 import { MapView } from 'expo';
 import { Marker } from 'react-native-maps';
 
+import BestGrid from './PhotoGrid.js';
+
 const profileIcons = {
   Karl: require("../assets/karl.jpg"),
   Kevin: require("../assets/kevin.jpeg"),
@@ -17,6 +19,7 @@ class CollectionScreen extends React.Component {
     super(props);
     this.state={
       mode:"myCollection",
+      score: 5,
       newUser:true,
       user: "",
       lat: 0,
@@ -65,6 +68,7 @@ class CollectionScreen extends React.Component {
       if (responseJson.success)
       {
         this.setState({user: responseJson.user.firstName});
+        this.setState({score: responseJson.user.userCollection.length});
         console.log("GOT USER", this.state.user);
       }
       else
@@ -98,12 +102,20 @@ class CollectionScreen extends React.Component {
 		switch(mode) {
 			case 'myCollection':
       	return (
+          this.state.score == "" ?//should test for 0 after componentDidMount
           <View style={styles.createCollectionContainer}>
             <Image style={styles.iconSize} source={require('../assets/addtocollection.png')} />
             <Text style={styles.textSize}>Create Your Collection</Text>
             <Text>Tap the add icon when you like a piece of art to </Text>
             <Text>save it to your collection</Text>
+            <Text>Score: {this.state.score}</Text>
           </View>
+
+          :
+
+          /*render all photos in a grid pattern*/
+            <BestGrid score={this.state.score}/>
+
         );
 			case 'myFavorites':
           return (
