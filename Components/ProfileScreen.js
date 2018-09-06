@@ -1,8 +1,9 @@
 import React from 'react';
-import { TouchableOpacity, StyleSheet, Text, View, Image, StatusBar, Platform } from 'react-native';
+import { TouchableOpacity, StyleSheet, Text, View, Image, Platform } from 'react-native';
 import { Button, Avatar } from 'react-native-elements';
 import Ripple from 'react-native-material-ripple';
 import { material, iOSColors, systemWeights, materialColors } from 'react-native-typography';
+import axios from 'axios';
 
 const profileIcons = {
   Karl: require("../assets/karl.jpg"),
@@ -50,6 +51,9 @@ class ProfileScreen extends React.Component {
     })
   }
 
+  handleCamera = () => {
+    this.props.navigation.navigate("Camera");
+  }
 
   logout = () => {
     fetch('https://enigmatic-garden-90693.herokuapp.com/logout', {
@@ -75,6 +79,14 @@ class ProfileScreen extends React.Component {
         <View style={styles.backgroundContainer}>
           <Image style={styles.background} source={require('../assets/landingBG.jpg')} />
         </View>
+          <Button
+            onPress={this.handleCamera}
+            justifyContent="start"
+            containerViewStyle={{ marginTop: 30 }}
+            borderRadius={30}
+            title='Return to Camera'
+            backgroundColor='#4DB6AC'
+          />
 
         <View style={styles.profileTextContainer}>
           <Image style={styles.image} source={!this.state.user ? null : profileIcons[this.state.user] ? profileIcons[this.state.user] : profileIcons["default"]}/>

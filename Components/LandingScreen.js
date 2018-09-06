@@ -3,6 +3,7 @@ import { StyleSheet, Text, View, Image, Platform } from 'react-native';
 import Ripple from 'react-native-material-ripple';
 import * as Animatable from 'react-native-animatable';
 import LottieView from 'lottie-react-native';
+import { Video } from 'expo';
 
 class LandingScreen extends React.Component {
   static navigationOptions = {
@@ -14,9 +15,14 @@ class LandingScreen extends React.Component {
       <Ripple style={styles.backgroundContainer} rippleDuration={800} rippleFades rippleSize={400}
         onPressOut={()=>setTimeout(()=>this.props.navigation.navigate("Login"), 500)}>
         <View style={styles.main}>
-          <View style={styles.backgroundContainer}>
-            <Image style={styles.background} source={require('../assets/landingBG.jpg')} />
-          </View>
+          <Video
+            source={require('../assets/lines.mp4')}
+            resizeMode="cover"
+            shouldPlay
+            isLooping
+            style={styles.video}
+          />
+
           <View style={styles.titleContainer}>
             <Image source={require('../assets/whatsartIcon.png')} style={styles.titleIcon} />
             <Animatable.Text animation="fadeInDown" iterationCount={1} delay={0}
@@ -46,15 +52,14 @@ const styles = StyleSheet.create({
   main: {
     flex: 1,
   },
-  backgroundContainer: {
+  video: {
     position: 'absolute',
-    top: 0,
-    left: 0,
     width: '100%',
     height: '100%',
+    opacity: 0.8,
   },
-  background: {
-    resizeMode: 'cover'
+  backgroundContainer: {
+    flex: 1
   },
   titleContainer: {
     //borderWidth: 10,
@@ -94,7 +99,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontFamily: Platform.OS === 'ios' ? 'Verdana' : 'sans-serif',
     color: 'white',
-  }
+  },
 });
 
 export default LandingScreen;

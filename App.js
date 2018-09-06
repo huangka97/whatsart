@@ -1,12 +1,11 @@
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { createStackNavigator } from 'react-navigation';
-import { zoomIn, fadeIn, flipY } from 'react-navigation-transitions';
+import { zoomIn, fadeIn, flipY, fromLeft } from 'react-navigation-transitions';
 
 // All Screen Components
 import LandingScreen from './Components/LandingScreen.js';
 import LoginScreen from './Components/LoginScreen.js';
-import SignupScreen from './Components/SignupScreen.js';
 import CameraScreen from './Components/CameraScreen.js';
 import ProfileScreen from './Components/ProfileScreen.js'
 import CollectionScreen from './Components/CollectionScreen.js';
@@ -19,10 +18,9 @@ const WhatsArt = createStackNavigator(
   {
     Landing: { screen: LandingScreen },
     Login: { screen: LoginScreen },
-    Signup: { screen: SignupScreen },
     Camera: { screen: CameraScreen },
     Collection: { screen: CollectionScreen },
-    UserProfile:{ screen: ProfileScreen },
+    Profile: { screen: ProfileScreen },
     Test: { screen: TestScreen }, // Remove later, for testing purposes
   },
   {
@@ -43,6 +41,9 @@ const WhatsArt = createStackNavigator(
       }
       else if (routeName === 'Camera') {
         return zoomIn(600);
+      }
+      else if (routeName === 'Profile') {
+        return fromLeft(1000);
       }
       else {
         return fadeIn(600);

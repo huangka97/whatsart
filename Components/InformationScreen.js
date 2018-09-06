@@ -1,11 +1,10 @@
 import React from 'react';
-import { StyleSheet, Text, View, Image, StatusBar, Platform,ScrollView, Dimensions } from 'react-native';
-import { FormLabel, FormInput, FormValidationMessage,Icon } from 'react-native-elements';
+import { StyleSheet, Text, View, Image, StatusBar, Platform, ScrollView, Dimensions } from 'react-native';
 import { SocialIcon, Divider, Button } from 'react-native-elements';
 import { Video } from 'expo';
-import {Ionicons,Entypo} from "@expo/vector-icons";
+import { Ionicons, Entypo } from "@expo/vector-icons";
 import Ripple from 'react-native-material-ripple';
-import {material, iOSColors,systemWeights,materialColors} from 'react-native-typography';
+import { material, iOSColors,systemWeights,materialColors } from 'react-native-typography';
 
 
 

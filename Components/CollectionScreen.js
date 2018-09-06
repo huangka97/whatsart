@@ -1,7 +1,7 @@
 import React from 'react';
 import {StyleSheet, TouchableOpacity, Text, View, Image} from 'react-native';
 import {material, iOSColors, systemWeights} from 'react-native-typography';
-import {Avatar} from 'react-native-elements';
+import {Avatar, Button} from 'react-native-elements';
 import {MapView} from 'expo';
 import {Marker} from 'react-native-maps';
 
@@ -84,6 +84,10 @@ class CollectionScreen extends React.Component {
   //   this.setState({subMode:"myPhotogrid"})
   // }
 
+  handleCamera = () => {
+    this.props.navigation.navigate("Camera");
+  }
+
   getModeRender = (mode) => {
     switch (mode) {
       case 'myCollection':
@@ -164,6 +168,14 @@ class CollectionScreen extends React.Component {
               ? profileIcons[this.state.user]
               : profileIcons["default"]}/>
         <Text style={styles.userTitle}>{this.state.user}</Text>
+          <Button
+            onPress={this.handleCamera}
+            justifyContent="start"
+            containerViewStyle={{ marginLeft: 80 }}
+            borderRadius={30}
+            title='Return to Camera'
+            backgroundColor='#4DB6AC'
+          />
       </View>
 
       <View style={styles.scanandcollectionContainer}>
