@@ -51,6 +51,9 @@ class ProfileScreen extends React.Component {
     })
   }
 
+  handleCamera = () => {
+    this.props.navigation.navigate("Camera");
+  }
 
   logout = () => {
     fetch('https://enigmatic-garden-90693.herokuapp.com/logout', {
@@ -76,6 +79,14 @@ class ProfileScreen extends React.Component {
         <View style={styles.backgroundContainer}>
           <Image style={styles.background} source={require('../assets/landingBG.jpg')} />
         </View>
+          <Button
+            onPress={this.handleCamera}
+            justifyContent="start"
+            containerViewStyle={{ marginTop: 30 }}
+            borderRadius={30}
+            title='Return to Camera'
+            backgroundColor='#4DB6AC'
+          />
 
         <View style={styles.profileTextContainer}>
           <Image style={styles.image} source={!this.state.user ? null : profileIcons[this.state.user] ? profileIcons[this.state.user] : profileIcons["default"]}/>
