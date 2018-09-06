@@ -20,6 +20,7 @@ class CollectionScreen extends React.Component {
     this.state={
       mode:"myCollection",
       score: 5,
+      numFavorites: 5,
       newUser:true,
       user: "",
       lat: 0,
@@ -119,12 +120,19 @@ class CollectionScreen extends React.Component {
         );
 			case 'myFavorites':
           return (
+            this.state.numFavorites == "" ?//should test for 0 after componentDidMount
             <View style={styles.createScanContainer}>
               <Image style={styles.iconSize} source={require('../assets/heart.png')}/>
               <Text style={styles.textSize}>View Your Favorites!</Text>
               <Text>Once you favorite photos from your collection,</Text>
               <Text>you'll find them here</Text>
             </View>
+
+          :
+          
+          /*render all photos in a grid pattern*/
+          <BestGrid score = {this.state.numFavorites}/>
+
           )
       case 'myMap':
         let markers = this.state.markers;
