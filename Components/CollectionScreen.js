@@ -20,7 +20,7 @@ class CollectionScreen extends React.Component {
     this.state={
       mode:"myCollection",
       score: 5,
-      numFavorites: 5,
+      numFavorites: 2,
       newUser:true,
       user: "",
       lat: 0,
@@ -115,7 +115,9 @@ class CollectionScreen extends React.Component {
           :
 
           /*render all photos in a grid pattern*/
+          <View style={styles.gridContainer}>
             <BestGrid score={this.state.score}/>
+          </View> 
 
         );
 			case 'myFavorites':
@@ -131,7 +133,9 @@ class CollectionScreen extends React.Component {
           :
           
           /*render all photos in a grid pattern*/
-          <BestGrid score = {this.state.numFavorites}/>
+          <View style={styles.gridContainer}>
+            <BestGrid score = {this.state.numFavorites}/>
+          </View> 
 
           )
       case 'myMap':
@@ -190,6 +194,12 @@ class CollectionScreen extends React.Component {
 const styles=StyleSheet.create({
   mainContainer: {
     flex:1
+  },
+  gridContainer:{
+    justifyContent:"space-around",
+    backgroundColor:iOSColors.grey,
+    flex:4,
+    alignItems: "center",
   },
   scanandcollectionContainer:{
     justifyContent:"space-around",
