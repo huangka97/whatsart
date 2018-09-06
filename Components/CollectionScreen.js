@@ -19,7 +19,7 @@ class CollectionScreen extends React.Component {
     super(props);
     this.state={
       mode:"myCollection",
-      score: 5,
+      score:5,
       newUser:true,
       user: "",
       lat: 0,
@@ -114,7 +114,7 @@ class CollectionScreen extends React.Component {
           :
 
           /*render all photos in a grid pattern*/
-            <BestGrid score={this.state.score}/>
+            <BestGrid score={this.state.score} style={styles.createGridCollectionContainer}/>
 
         );
 			case 'myFavorites':
@@ -198,6 +198,10 @@ const styles=StyleSheet.create({
   createCollectionContainer:{
     flex:4,
     alignItems:"center"
+  },
+  createGridCollectionContainer:{
+    flex:4,
+
   },
   createScanContainer:{
     flex:4,

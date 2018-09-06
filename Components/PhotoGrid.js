@@ -36,12 +36,6 @@ class BestGrid extends React.Component {
     );
   }
 
-  renderHeader() {
-    return(
-      <Text>I'm on top!</Text>
-    );
-  }
-
   renderItem(item, itemSize, itemPaddingHorizontal) {
     return(
       <TouchableOpacity
