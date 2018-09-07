@@ -21,6 +21,7 @@ class CameraScreen extends React.Component {
       type: Camera.Constants.Type.back,
       processingImg: false,
       isLoading: true,
+      animationMode: 'frameAnimation',
       googleVisionResults: null,
       artworkInfo: {},
       informationModalOpen: false,
@@ -125,16 +126,30 @@ class CameraScreen extends React.Component {
     }
   }
 
-  // // Cancel Image
-  // handleCancel = () => {
-  //   console.log('cancel')
-  //   this.setState({ currentImg: null });
-  // }
-  //
-  // // Toogle InformationScreen
-  // toggleInformation=()=>{
-  //   this.setState({ showInformationScreen: !this.state.showInformationScreen });
-  // }
+  getAnimation = () => {
+    switch(this.state.animationMode) {
+      case 'frameAnimation':
+        return (
+          <LottieView ref={ref => this.frameAnimation = ref} source={require('../assets/CameraScreen/focus.json')}
+            duration={1500} loop={false} style={styles.frameAnimation} />
+        );
+      case 'loadingAnimation':
+        return (
+          <LottieView ref={ref => this.loadingAnimation = ref} source={require('../assets/CameraScreen/loading.json')}
+            autoPlay style={styles.loadingAnimation} />
+        );
+      case 'successAnimation':
+        return (
+          <LottieView ref={ref => this.successAnimation = ref} source={require('../assets/CameraScreen/success1.json')}
+            duration={1500} autoPlay loop={false} style={styles.successAnimation} />
+        );
+      case 'failAnimation':
+        return (
+          <LottieView ref={ref => this.failAnimation = ref} source={require('../assets/CameraScreen/fail.json')}
+            duration={1500} autoPlay loop={false} style={styles.failAnimation} />
+        );
+    }
+  }
 
   render() {
     const { hasCameraPermission } = this.state;
@@ -237,7 +252,11 @@ const styles = StyleSheet.create({
   successAnimation: {
     width: 300,
     alignSelf: 'center',
-  }
+  },
+  failAnimation: {
+    width: 300,
+    alignSelf: 'center',
+  },
 });
 
 export default CameraScreen;
