@@ -19,8 +19,6 @@ class CameraScreen extends React.Component {
     this.state = {
       hasCameraPermission: null,
       type: Camera.Constants.Type.back,
-      processingImg: false,
-      isLoading: true,
       animationMode: 'frameAnimation',
       googleVisionResults: null,
       artworkInfo: {},
@@ -47,14 +45,14 @@ class CameraScreen extends React.Component {
   // Frame Animation
   startFrameAnimation = () => {
     return new Promise((resolve, reject) => {
-      setTimeout(()=>resolve('Frame animation done!'), 500);
+      setTimeout(() => resolve('Frame animation done!'), 500);
       this.frameAnimation.reset();
       this.frameAnimation.play();
     })
   }
 
   processImage = async (data) => {
-    this.setState({ processingImg: true });
+    this.setState({ animationMode: 'loadingAnimation' });
     this.camera.pausePreview();
     const compressedImg = await ImageManipulator.manipulate(data.uri, [{ resize: { width: 480 } }], { compress: 0, base64: true });
     this.googleVisionArtwork(compressedImg.base64)
@@ -63,11 +61,13 @@ class CameraScreen extends React.Component {
       return this.getArtworkInfo();
     })
     .then(() => {
-      this.setState({ isLoading: false });
-      setTimeout(() => this.toggleInformationModal(), 1500);
+      this.setState({ animationMode: 'successAnimation' });
+      setTimeout(this.toggleInformationModal, 1500);
     })
     .catch((err) => {
       console.log('Image Processing ERROR:', err);
+      this.setState({ animationMode: 'failAnimation' });
+      setTimeout(this.resolveFailAnimation, 1900);
     });
   }
 
@@ -115,11 +115,7 @@ class CameraScreen extends React.Component {
   // Toggle Information Modal for Artwork
   toggleInformationModal = () => {
     if(!this.state.informationModalOpen) {
-      this.setState({
-        processingImg: false,
-        isLoading: true,
-        informationModalOpen: true,
-      });
+      this.setState({ animationMode: 'frameAnimation', informationModalOpen: true });
     } else {
       this.camera.resumePreview();
       this.setState({ informationModalOpen: false });
@@ -151,6 +147,11 @@ class CameraScreen extends React.Component {
     }
   }
 
+  resolveFailAnimation = () => {
+    this.setState({ animationMode: 'frameAnimation' });
+    this.camera.resumePreview();
+  }
+
   render() {
     const { hasCameraPermission } = this.state;
     if (hasCameraPermission === null) { // Display Nothing while Asking User for Permissions
@@ -169,20 +170,13 @@ class CameraScreen extends React.Component {
         <View style={styles.main}>
           <StatusBar hidden />
           <Camera style={styles.camera} type={this.state.type} ref={ref => {this.camera = ref;}}>
-            <View style={!this.state.processingImg ? styles.cameraInnerViewContainer : styles.cameraInnerViewContainerMask}>
+            <View style={this.state.animationMode === 'frameAnimation' ? styles.cameraInnerViewContainer : styles.cameraInnerViewContainerMask}>
               <View style={styles.topBarContainer}>
                 <Ripple rippleColor="#FFFFFF" rippleContainerBorderRadius={15} onPress={()=>this.props.navigation.navigate('Profile')}>
                   <Image style={styles.iconSize} source={require('../assets/CameraScreen/profile.png')} />
                 </Ripple>
               </View>
-
-              {!this.state.processingImg ? <LottieView ref={ref => this.frameAnimation = ref} source={require('../assets/CameraScreen/focus.json')}
-                duration={1500} loop={false} style={styles.frameAnimation} /> : null}
-              {this.state.processingImg && this.state.isLoading ? <LottieView ref={ref => this.loadingAnimation = ref}
-                source={require('../assets/CameraScreen/loading.json')} autoPlay style={styles.loadingAnimation} /> : null}
-              {this.state.processingImg && !this.state.isLoading ? <LottieView ref={ref => this.successAnimation = ref}
-                source={require('../assets/CameraScreen/success1.json')} duration={1500} autoPlay loop={false} style={styles.successAnimation} /> : null}
-
+              {this.getAnimation()}
               <View style={styles.bottomBarContainer}>
                 <Ripple rippleColor="#FFFFFF" rippleContainerBorderRadius={15} onPress={()=>this.props.navigation.navigate("Collection")}>
                   <Image style={styles.iconSize} source={require('../assets/CameraScreen/collection.png')} />
@@ -254,7 +248,7 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
   },
   failAnimation: {
-    width: 300,
+    width: 250,
     alignSelf: 'center',
   },
 });
