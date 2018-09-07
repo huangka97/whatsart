@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Text, View, Image, StatusBar, Dimensions, PixelRatio } from 'react-native';
+import { StyleSheet, Text, View, Image, StatusBar, Dimensions, PixelRatio, Platform } from 'react-native';
 import { Camera, Permissions, ImageManipulator } from 'expo';
 import Ripple from 'react-native-material-ripple';
 import LottieView from 'lottie-react-native';
@@ -169,7 +169,7 @@ class CameraScreen extends React.Component {
       return ( // Return the Normal Camera Display and Functionality
         <View style={styles.main}>
           <StatusBar hidden />
-          <Camera style={styles.camera} type={this.state.type} ref={ref => {this.camera = ref;}}>
+          <Camera style={styles.camera} type={this.state.type} ref={ref => this.camera = ref}>
             <View style={this.state.animationMode === 'frameAnimation' ? styles.cameraInnerViewContainer : styles.cameraInnerViewContainerMask}>
               <View style={styles.topBarContainer}>
                 <Ripple rippleColor="#FFFFFF" rippleContainerBorderRadius={15} onPress={()=>this.props.navigation.navigate('Profile')}>
@@ -196,7 +196,7 @@ class CameraScreen extends React.Component {
 }
 
 const { width } = Dimensions.get('window');
-const pixelWidth = width * PixelRatio.get() * 0.65;
+const pixelWidth = width * PixelRatio.get();
 
 const styles = StyleSheet.create({
   noAccess: {
@@ -236,19 +236,19 @@ const styles = StyleSheet.create({
     width: 50,
   },
   frameAnimation: {
-    width: pixelWidth,
+    width: Platform.OS === 'ios' ? pixelWidth * 0.65 : pixelWidth * 0.4,
     alignSelf: 'center',
   },
   loadingAnimation: {
-    width: 200,
+    width: Platform.OS === 'ios' ? pixelWidth * 0.2 : pixelWidth * 0.15,
     alignSelf: 'center',
   },
   successAnimation: {
-    width: 300,
+    width: Platform.OS === 'ios' ? pixelWidth * 0.25 : pixelWidth * 0.2,
     alignSelf: 'center',
   },
   failAnimation: {
-    width: 250,
+    width: Platform.OS === 'ios' ? pixelWidth * 0.2 : pixelWidth * 0.2,
     alignSelf: 'center',
   },
 });
