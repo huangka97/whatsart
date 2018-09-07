@@ -32,14 +32,14 @@ const WhatsArt = createStackNavigator(
     },
     transitionConfig: (prop) => {
       const routeName = prop.scene.route.routeName;
-      if (['Landing', 'Login', 'Signup'].includes(routeName)) {
+      if (['Landing', 'Login'].includes(routeName)) {
         return fadeIn(600);
       }
       else if (routeName === 'Camera') {
         return zoomIn(600);
       }
-      else if (routeName === 'Profile') {
-        return fromLeft(1000);
+      else if (['Profile', 'Collection'].includes(routeName)) {
+        return fromLeft(800);
       }
       else {
         return fadeIn(600);

@@ -7,7 +7,6 @@
     "android": "expo start --android",
     "ios": "expo start --ios",
     "eject": "expo eject",
-    "backend-dev": "nodemon server/server.js --exec babel-node --presets es2015,stage-2"
   },
   "dependencies": {
     "@expo/vector-icons": "^6.3.1",
