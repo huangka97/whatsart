@@ -18,7 +18,7 @@ class InformationModalScreen extends React.Component {
     const { height, width } = Dimensions.get('window');
 
     return (
-      <Modal ref={ref => this.modal = ref} isOpen={this.props.isOpen}
+      <Modal ref={ref => this.modal = ref} isOpen={this.props.isOpen} swipeArea={50}
         animationDuration={400} style={styles.mainContainer} onClosed={this.props.onClose}>
         <View style={styles.imageContainer}>
           <Image style={styles.backgroundImage} blurRadius={20} source={{width: width, height: height, uri: this.props.imgURL}}/>

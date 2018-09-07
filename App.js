@@ -1,7 +1,6 @@
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { createStackNavigator } from 'react-navigation';
-import { zoomIn, fadeIn, flipY, fromLeft } from 'react-navigation-transitions';
 
 // All Screen Components
 import LandingScreen from './Components/LandingScreen.js';
@@ -9,6 +8,10 @@ import LoginScreen from './Components/LoginScreen.js';
 import CameraScreen from './Components/CameraScreen.js';
 import ProfileScreen from './Components/ProfileScreen.js'
 import CollectionScreen from './Components/CollectionScreen.js';
+
+// For Screen Transitions
+import { zoomIn, fadeIn, flipY, fromLeft } from 'react-navigation-transitions';
+import StackViewStyleInterpolator from 'react-navigation-stack/dist/views/StackView/StackViewStyleInterpolator';
 
 // For Navigation Between Screens
 const WhatsArt = createStackNavigator(
@@ -36,7 +39,14 @@ const WhatsArt = createStackNavigator(
         return fadeIn(600);
       }
       else if (routeName === 'Camera') {
-        return zoomIn(600);
+        //console.log(prop.navigation.state);
+        const params = prop.navigation.state.routes.slice(-1)[0].params
+        if (params && params.previous === 'Collection') {
+          return StackViewStyleInterpolator.forHorizontal(prop);
+          return zoomIn(600);
+        } else {
+          return zoomIn(600);
+        }
       }
       else if (['Profile', 'Collection'].includes(routeName)) {
         return fromLeft(800);

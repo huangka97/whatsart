@@ -1,9 +1,10 @@
 import React from 'react';
-import {StyleSheet, TouchableOpacity, Text, View, Image} from 'react-native';
-import {material, iOSColors, systemWeights} from 'react-native-typography';
-import {Avatar, Button} from 'react-native-elements';
-import {MapView} from 'expo';
-import {Marker} from 'react-native-maps';
+import { StyleSheet, TouchableOpacity, Text, View, Image } from 'react-native';
+import { material, iOSColors, systemWeights } from 'react-native-typography';
+import { Avatar, Button } from 'react-native-elements';
+import { MapView } from 'expo';
+import { Marker } from 'react-native-maps';
+import axios from 'axios';
 
 import BestGrid from './PhotoGrid.js';
 
@@ -11,8 +12,8 @@ const profileIcons = {
   Karl: require("../assets/karl.jpg"),
   Kevin: require("../assets/kevin.jpeg"),
   Kitan: require("../assets/kitan.jpg"),
-  default: require("../assets/defaultProfile.png")
-}
+  default: require("../assets/defaultProfile.png"),
+};
 
 class CollectionScreen extends React.Component {
   constructor(props) {
@@ -30,6 +31,7 @@ class CollectionScreen extends React.Component {
       markers: []
     }
   }
+
   static navigationOptions = {
     header: null
   };
@@ -38,6 +40,15 @@ class CollectionScreen extends React.Component {
     navigator.geolocation.getCurrentPosition((success) => {
       this.setState({lat: success.coords.latitude, long: success.coords.longitude})
     })
+
+    // axios.get('https://enigmatic-garden-90693.herokuapp.com/museums')
+    // .then(({ data: { success, user } }) => {
+    //   if (success) {
+    //     console.log('USER:', user);
+    //   }
+    // })
+    // .catch(err => console.log('Error getting User and Collection Information'))
+
     //fetch latitude and longitude of museums name to display on map
     fetch('https://enigmatic-garden-90693.herokuapp.com/museums', {
       method: 'GET',
@@ -70,22 +81,19 @@ class CollectionScreen extends React.Component {
   }
 
   toggleCollection() {
-    this.setState({mode: "myCollection"})
+    this.setState({ mode: "myCollection" })
   }
 
   toggleScan() {
-    this.setState({mode: "myFavorites"})
+    this.setState({ mode: "myFavorites" })
   }
 
   toggleMap() {
-    this.setState({mode: "myMap"})
+    this.setState({ mode: "myMap" })
   }
-  // togglePhotoGrind(){
-  //   this.setState({subMode:"myPhotogrid"})
-  // }
 
   handleCamera = () => {
-    this.props.navigation.navigate("Camera");
+    this.props.navigation.navigate("Camera", { previous: 'Collection' });
   }
 
   getModeRender = (mode) => {
