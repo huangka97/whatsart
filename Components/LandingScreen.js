@@ -16,21 +16,21 @@ class LandingScreen extends React.Component {
         onPressOut={()=>setTimeout(()=>this.props.navigation.navigate("Login"), 500)}>
         <View style={styles.main}>
           <Video
-            source={require('../assets/lines.mp4')}
+            source={require('../assets/LandingScreen/lines.mp4')}
             resizeMode="cover"
             shouldPlay
             isLooping
             style={styles.video}
           />
           <View style={styles.titleContainer}>
-            <Image source={require('../assets/whatsartIcon.png')} style={styles.titleIcon} />
+            <Image source={require('../assets/LandingScreen/whatsartIcon.png')} style={styles.titleIcon} />
             <Animatable.Text animation="fadeInDown" iterationCount={1} delay={0}
               style={styles.title}>WhatsArt</Animatable.Text>
           </View>
           <View style={styles.imageContainer}>
-            <Image source={require('../assets/canvas.png')} style={styles.canvasImage} />
+            <Image source={require('../assets/LandingScreen/canvas.png')} style={styles.canvasImage} />
             <LottieView
-              source={require('../assets/searchAnimation.json')}
+              source={require('../assets/LandingScreen/searchAnimation.json')}
               speed={0.6}
               autoPlay
               loop

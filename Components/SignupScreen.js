@@ -114,7 +114,6 @@ class SignupScreen extends React.Component {
               <Text style={styles.cancelText}>Cancel</Text>
             </TouchableOpacity>
           </View>
-
         </KeyboardAvoidingView>
       </Modal>
     );

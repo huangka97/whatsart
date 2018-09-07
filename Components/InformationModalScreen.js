@@ -1,86 +1,57 @@
 import React from 'react';
-import { StyleSheet, Text, View, Image, StatusBar, Platform, ScrollView, Dimensions } from 'react-native';
-import { Video } from 'expo';
-import { Entypo } from "@expo/vector-icons";
-import Ripple from 'react-native-material-ripple';
+import { StyleSheet, Text, View, Image, TouchableOpacity, StatusBar, ScrollView, Platform, Dimensions } from 'react-native';
 import { material, iOSColors, systemWeights, materialColors } from 'react-native-typography';
-import axios from 'axios';
+import Modal from 'react-native-modalbox';
+import Ripple from 'react-native-material-ripple';
+import { Entypo } from "@expo/vector-icons";
 
-class InformationScreen extends React.Component {
+class InformationModalScreen extends React.Component {
   static navigationOptions = {
     header: null
   };
 
-  constructor(props) {
-    super(props);
-    this.state = {
-      title: "",
-      artist: "",
-      imgURL: "",
-      city: "",
-      year: "",
-      museum: "",
-      medium: "",
-      dimensions: "",
-    }
-  }
-
-componentDidMount() {
-    axios.post('https://enigmatic-garden-90693.herokuapp.com/artwork', {
-      artworkName: this.props.artNameArray,
-    })
-    .then(({ data: { artworkInfo } }) => {
-      console.log(123, 'here')
-      const { title, artist, imgURL, city, year, museum, medium, summary, dimensions } = artworkInfo;
-      this.setState({ title, artist, imgURL, city, year, museum, medium, summary, dimensions });
-    })
-    .catch((err) => {
-      console.log("ERROR:", err);
-    });
-  }
-
-  rando = () => {
-    console.log("ENTERED");
-    setTimeout(this.props.showInfo, 500);
+  closeInformationModal = () => {
+    this.modal.close();
   }
 
   render() {
     const { height, width } = Dimensions.get('window');
 
     return (
-      <View style={styles.mainContainer}>
+      <Modal ref={ref => this.modal = ref} isOpen={this.props.isOpen}
+        animationDuration={600} style={styles.mainContainer} onClosed={this.props.onClose}>
         <View style={styles.imageContainer}>
-          <Image style={styles.backgroundImage} blurRadius={20} source={{width: width, height: height, uri: this.state.imgURL}}/>
+          <Image style={styles.backgroundImage} blurRadius={20} source={{width: width, height: height, uri: this.props.imgURL}}/>
         </View>
         <View style={styles.filterContainer}>
           <View style={styles.titleContainer}>
-            <Ripple rippleColor="#FFFFFF" rippleContainerBorderRadius={25} rippleOpacity={0.5} onPress={this.rando}>
+            <Ripple rippleColor="#FFFFFF" rippleContainerBorderRadius={25} rippleOpacity={0.5} onPress={this.closeInformationModal}>
               <Entypo name="chevron-thin-left" size={30} color="white"/>
             </Ripple>
           </View>
           <View style={styles.innerImageContainer}>
-            <Image style={styles.image} source={{uri: this.state.imgURL}}/>
+            <Image style={styles.image} source={{uri: this.props.imgURL}}/>
           </View>
           <View style={styles.innerInformation}>
             <Text style={{color:iOSColors.white,fontSize:30,...systemWeights.light}}>
-              {this.state.title}
+              {this.props.title}
             </Text>
             <Text style={{color:iOSColors.white, fontSize:18, ...systemWeights.bold,textDecorationLine: 'underline',textDecorationColor: 'white', textDecorationStyle: "solid"}}>
-              {this.state.artist}
+              {this.props.artist}
             </Text>
             <Text style={{color:iOSColors.white,fontSize:15,...systemWeights.semibold}}>
-              {this.state.city} | {this.state.year} | {this.state.museum} | {this.state.medium} | {this.state.dimensions}
+              {this.props.city} | {this.props.year} | {this.props.museum} | {this.props.medium} | {this.props.dimensions}
             </Text>
             <View>
               <ScrollView>
                 <Text style={{color:iOSColors.white,fontSize:15,...systemWeights.light}}>
-                {this.state.summary}
+                {this.props.summary}
                 </Text>
               </ScrollView>
             </View>
           </View>
         </View>
-      </View>
+      </Modal>
     );
   }
 }
@@ -118,17 +89,17 @@ const styles = StyleSheet.create({
   },
   filterContainer: {
     flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.5)',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
   summaryContainer:{
-    flex:1
+    flex: 1,
   },
   titleContainer: {
     flex: 0.3,
-    flexDirection:'row',
+    flexDirection: 'row',
     justifyContent: 'flex-start',
     alignItems: 'center',
-    marginTop: 30
+    marginTop: 30,
   },
   title: {
     fontSize: 60,
@@ -137,4 +108,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default InformationScreen;
+export default InformationModalScreen;

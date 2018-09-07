@@ -1,14 +1,13 @@
 import React from 'react';
-import { StyleSheet, Text, View, Image, StatusBar } from 'react-native';
+import { StyleSheet, Text, View, Image, StatusBar, Dimensions, PixelRatio } from 'react-native';
 import { Camera, Permissions, ImageManipulator } from 'expo';
 import Ripple from 'react-native-material-ripple';
 import LottieView from 'lottie-react-native';
 import axios from 'axios';
-import config from "../config.json";
+import { googleCloud } from "../config.json";
 
-// To preview the image taken before deciding to process it
-import CameraScreenPreview from './CameraScreenPreview.js';
-import InformationScreen from './InformationScreen.js';
+// To Show Artwork Information
+import InformationModalScreen from './InformationModalScreen.js';
 
 class CameraScreen extends React.Component {
   static navigationOptions = { // Don't display header for camera.
@@ -20,9 +19,11 @@ class CameraScreen extends React.Component {
     this.state = {
       hasCameraPermission: null,
       type: Camera.Constants.Type.back,
-      currentImg: null,
-      showInformationScreen: false,
-      webEntitiesArray: [],
+      processingImg: false,
+      isLoading: true,
+      googleVisionResults: null,
+      artworkInfo: {},
+      informationModalOpen: false,
     };
   }
 
@@ -32,18 +33,47 @@ class CameraScreen extends React.Component {
     this.setState({ hasCameraPermission: status === 'granted' });
   }
 
-  frameAnimation = () => {
+  // Camera Functionality
+  snap = async () => {
+    if (this.camera) {
+      this.startFrameAnimation()
+      .then(() => {
+        this.camera.takePictureAsync({ onPictureSaved: this.processImage });
+      });
+    }
+  };
+
+  // Frame Animation
+  startFrameAnimation = () => {
     return new Promise((resolve, reject) => {
-      setTimeout(()=>resolve('Animation done!'), 1000);
-      this.frame.reset();
-      this.frame.play();
+      setTimeout(()=>resolve('Frame animation done!'), 500);
+      this.frameAnimation.reset();
+      this.frameAnimation.play();
     })
   }
 
+  processImage = async (data) => {
+    this.setState({ processingImg: true });
+    this.camera.pausePreview();
+    const compressedImg = await ImageManipulator.manipulate(data.uri, [{ resize: { width: 480 } }], { compress: 0, base64: true });
+    this.googleVisionArtwork(compressedImg.base64)
+    .then(() => {
+      console.log('googleVisionResults:', this.state.googleVisionResults);
+      return this.getArtworkInfo();
+    })
+    .then(() => {
+      this.setState({ isLoading: false });
+      setTimeout(() => this.toggleInformationModal(), 1500);
+    })
+    .catch((err) => {
+      console.log('Image Processing ERROR:', err);
+    });
+  }
+
   // Google Vision API Call
-  async checkforLogos(base64) {
-      return await
-      axios.post(config.googleCloud.api+config.googleCloud.apiKey, {
+  googleVisionArtwork = async (base64) => {
+    return await
+      axios.post(googleCloud.api + googleCloud.apiKey, {
         "requests":[{
           "image":{
             "content": base64
@@ -56,40 +86,55 @@ class CameraScreen extends React.Component {
       })
       .then(({ data: { responses } }) => {
         const googleVisionResults = responses[0].webDetection.webEntities.map(obj => obj.description);
-        this.setState({ webEntitiesArray: googleVisionResults }, ()=>console.log(this.state.webEntitiesArray));
+        this.setState({ googleVisionResults: googleVisionResults });
         return Promise.resolve();
       })
-      .catch(err => console.log('Google Vision API ERROR:', err));
-    }
-
-  // Camera Functionality
-  snap = async () => {
-    if (this.camera) {
-      this.frameAnimation()
-      .then(() => {
-        this.camera.takePictureAsync({ quality: 1 })
-        .then(async ({ uri }) => {
-          this.setState({ currentImg: uri });
-          const imgResult = await ImageManipulator.manipulate(this.state.currentImg, [{ resize: { width: 480 } }], { compress: 0, base64: true })
-          this.checkforLogos(imgResult.base64)
-          .then(resp => console.log(resp))
-          .then(() => console.log(this.state.webEntitiesArray));
-        });
+      .catch(err => {
+        console.log('Google Vision API ERROR:', err);
+        return Promise.reject(err);
       });
+  }
+
+  // Send GoogleVision API Results to Backend for Artwork Information
+  getArtworkInfo = async () => {
+    return await
+      axios.post('https://enigmatic-garden-90693.herokuapp.com/artwork', {
+        artworkName: this.state.googleVisionResults,
+      })
+      .then(({ data: { artworkInfo } }) => {
+        this.setState({ artworkInfo });
+        return Promise.resolve();
+      })
+      .catch((err) => {
+        console.log("Backend ERROR:", err);
+        return Promise.reject(err);
+      });
+  }
+
+  // Toggle Information Modal for Artwork
+  toggleInformationModal = () => {
+    if(!this.state.informationModalOpen) {
+      this.setState({
+        processingImg: false,
+        isLoading: true,
+        informationModalOpen: true,
+      });
+    } else {
+      this.camera.resumePreview();
+      this.setState({ informationModalOpen: false });
     }
-  };
-
-  // Cancel Image
-  handleCancel = () => {
-    console.log('cancel')
-    this.setState({ currentImg: null });
   }
 
-  // Toogle InformationScreen
-  toggleInformation=()=>{
-    console.log("TOGGLED");
-    this.setState({ showInformationScreen: !this.state.showInformationScreen });
-  }
+  // // Cancel Image
+  // handleCancel = () => {
+  //   console.log('cancel')
+  //   this.setState({ currentImg: null });
+  // }
+  //
+  // // Toogle InformationScreen
+  // toggleInformation=()=>{
+  //   this.setState({ showInformationScreen: !this.state.showInformationScreen });
+  // }
 
   render() {
     const { hasCameraPermission } = this.state;
@@ -105,36 +150,44 @@ class CameraScreen extends React.Component {
       );
     }
     else {
-      return ( // Return the Normal Camera Display
-        !this.state.currentImg && !this.state.showInformationScreen ?
+      return ( // Return the Normal Camera Display and Functionality
         <View style={styles.main}>
           <StatusBar hidden />
-          <Camera style={styles.main} type={this.state.type} ref={ref => {this.camera = ref;}}>
-            <View style={styles.cameraViewContainer}>
+          <Camera style={styles.camera} type={this.state.type} ref={ref => {this.camera = ref;}}>
+            <View style={!this.state.processingImg ? styles.cameraInnerViewContainer : styles.cameraInnerViewContainerMask}>
               <View style={styles.topBarContainer}>
                 <Ripple rippleColor="#FFFFFF" rippleContainerBorderRadius={15} onPress={()=>this.props.navigation.navigate('Profile')}>
-                  <Image style={styles.iconSize} source={require('../assets/guest.png')} />
+                  <Image style={styles.iconSize} source={require('../assets/CameraScreen/profile.png')} />
                 </Ripple>
               </View>
-              <LottieView ref={ref => this.frame = ref} source={require('../assets/focus.json')} duration={1000} style={{ width: 800, alignSelf: 'center' }} />
+
+              {!this.state.processingImg ? <LottieView ref={ref => this.frameAnimation = ref} source={require('../assets/CameraScreen/focus.json')}
+                duration={1500} loop={false} style={styles.frameAnimation} /> : null}
+              {this.state.processingImg && this.state.isLoading ? <LottieView ref={ref => this.loadingAnimation = ref}
+                source={require('../assets/CameraScreen/loading.json')} autoPlay style={styles.loadingAnimation} /> : null}
+              {this.state.processingImg && !this.state.isLoading ? <LottieView ref={ref => this.successAnimation = ref}
+                source={require('../assets/CameraScreen/success1.json')} duration={1500} autoPlay loop={false} style={styles.successAnimation} /> : null}
+
               <View style={styles.bottomBarContainer}>
                 <Ripple rippleColor="#FFFFFF" rippleContainerBorderRadius={15} onPress={()=>this.props.navigation.navigate("Collection")}>
-                  <Image style={styles.iconSize} source={require('../assets/collections.png')} />
+                  <Image style={styles.iconSize} source={require('../assets/CameraScreen/collection.png')} />
                 </Ripple>
                 <Ripple rippleColor="#FFFFFF" rippleContainerBorderRadius={15} onPress={this.snap}>
-                  <Image style={styles.iconSize} source={require('../assets/camera.png')} />
+                  <Image style={styles.iconSize} source={require('../assets/CameraScreen/camera.png')} />
                 </Ripple>
                 <View style={styles.iconSize} ></View>
               </View>
             </View>
           </Camera>
+          <InformationModalScreen isOpen={this.state.informationModalOpen} onClose={this.toggleInformationModal} {...this.state.artworkInfo}/>
         </View>
-      : !this.state.showInformationScreen? <CameraScreenPreview showInfo={this.toggleInformation} currentImg={this.state.currentImg} cancel={this.handleCancel}/>
-      :<InformationScreen showInfo={this.toggleInformation} artNameArray={this.state.webEntitiesArray}/>
-      )
+      );
     }
   }
 }
+
+const { width } = Dimensions.get('window');
+const pixelWidth = width * PixelRatio.get() * 0.65;
 
 const styles = StyleSheet.create({
   noAccess: {
@@ -145,9 +198,17 @@ const styles = StyleSheet.create({
   main: {
     flex: 1,
   },
-  cameraViewContainer: {
+  camera: {
+    flex: 1
+  },
+  cameraInnerViewContainer: {
     flex: 1,
     backgroundColor: 'transparent',
+    justifyContent: 'space-between',
+  },
+  cameraInnerViewContainerMask: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.75)',
     justifyContent: 'space-between',
   },
   topBarContainer: {
@@ -165,6 +226,18 @@ const styles = StyleSheet.create({
     height: 50,
     width: 50,
   },
+  frameAnimation: {
+    width: pixelWidth,
+    alignSelf: 'center',
+  },
+  loadingAnimation: {
+    width: 200,
+    alignSelf: 'center',
+  },
+  successAnimation: {
+    width: 300,
+    alignSelf: 'center',
+  }
 });
 
 export default CameraScreen;
