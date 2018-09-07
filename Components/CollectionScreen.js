@@ -1,12 +1,13 @@
 import React from 'react';
 import { StyleSheet, TouchableOpacity, Text, View, Image } from 'react-native';
 import { material, iOSColors, systemWeights } from 'react-native-typography';
-import { Avatar, Button } from 'react-native-elements';
+import { Avatar, Button, ButtonGroup } from 'react-native-elements';
 import { MapView } from 'expo';
 import { Marker } from 'react-native-maps';
 import axios from 'axios';
 
 import BestGrid from './PhotoGrid.js';
+import InformationModalScreen from './InformationModalScreen.js';
 
 const profileIcons = {
   Karl: require("../assets/karl.jpg"),
@@ -16,256 +17,143 @@ const profileIcons = {
 };
 
 class CollectionScreen extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      mode: "myCollection",
-      score: 5,
-      favoriteHeader:"FAVORITES",
-      collectionHeader:"COLLECTION",
-      numFavorites: 2,
-      newUser:true,
-      user: "",
-      lat: 0,
-      long: 0,
-      markers: []
-    }
-  }
-
   static navigationOptions = {
     header: null
   };
 
+  constructor(props) {
+    super(props);
+    this.state = {
+      mode: "collection",
+      user: "",
+      userLat: 0,
+      userLong: 0,
+      markers: [],
+      modeIndex: 0,
+      informationModalOpen: false,
+      currentArtwork: {},
+    }
+  }
+
   componentDidMount() {
-    navigator.geolocation.getCurrentPosition((success) => {
-      this.setState({lat: success.coords.latitude, long: success.coords.longitude})
-    })
-
-    // axios.get('https://enigmatic-garden-90693.herokuapp.com/museums')
-    // .then(({ data: { success, user } }) => {
-    //   if (success) {
-    //     console.log('USER:', user);
-    //   }
-    // })
-    // .catch(err => console.log('Error getting User and Collection Information'))
-
-    //fetch latitude and longitude of museums name to display on map
-    fetch('https://enigmatic-garden-90693.herokuapp.com/museums', {
-      method: 'GET',
-      credentials: 'same-origin'
-    }).then(response => response.json()).then((responseJson) => {
-      if (responseJson.success) {
-        this.setState({markers: responseJson.markers});
-        console.log("THIS IS AMERICA: ",this.state.markers);
-      } else {
-        console.log("FAILURE!");
+    navigator.geolocation.getCurrentPosition(success =>
+      this.setState({ userLat: success.coords.latitude, userLong: success.coords.longitude }));
+    axios.get('https://enigmatic-garden-90693.herokuapp.com/UserWithCollection')
+    .then(({ data: { success, user } }) => {
+      if (success) {
+        this.setState({ user });
       }
     })
-
-    fetch('https://enigmatic-garden-90693.herokuapp.com/user', {
-      method: 'GET',
-      credentials: 'same-origin'
-    }).then(response => {
-      // console.log("RESPONSE: ", response);
-      return response.json()
-    }).then(responseJson => {
-      if (responseJson.success) {
-        this.setState({user: responseJson.user.firstName});
-        this.setState({score: responseJson.user.userCollection.length});
-        console.log("GOT USER", this.state.user);
-      } else {
-        this.setState({user: "default"});
-        console.log("CAN'T GET PROFILE PIC");
-      }
-    })
+    .catch(err => console.log('Error getting User and Collection Information'))
   }
 
-  toggleCollection() {
-    this.setState({ mode: "myCollection" })
+  changeMode = (modeIndex) => {
+    if(modeIndex === 0) {
+      this.setState({ modeIndex,  mode: 'collection' });
+    } else {
+      this.setState({ modeIndex, mode: 'map'});
+    }
   }
 
-  toggleScan() {
-    this.setState({ mode: "myFavorites" })
+  // Close Information Modal for Artwork
+  closeModal = (currentArtwork) => {
+    this.setState({ currentArtwork: {}, informationModalOpen: false });
   }
 
-  toggleMap() {
-    this.setState({ mode: "myMap" })
-  }
-
-  handleCamera = () => {
-    this.props.navigation.navigate("Camera", { previous: 'Collection' });
+  // Open Information Modal for Artwork
+  openModal = (currentArtwork) => {
+    this.setState({ currentArtwork, informationModalOpen: true });
   }
 
   getModeRender = (mode) => {
     switch (mode) {
-      case 'myCollection':
-        return (
-          this.state.score == ""? //should test for 0 after componentDidMount
-          <View style={styles.createCollectionContainer}>
-            <Image style={styles.iconSize} source={require('../assets/addtocollection.png')}/>
-            <Text style={styles.textSize}>Create Your Collection</Text>
-            <Text>Tap the add icon when you like a piece of art to
-            </Text>
-            <Text>save it to your collection</Text>
-            <Text>Score: {this.state.score}</Text>
-          </View>
-
-          :
-
-          /*render all photos in a grid pattern*/
-          <View style={styles.gridContainer}>
-            <BestGrid score={this.state.score} header={this.state.collectionHeader}/>
-          </View>
-
-        );
-			case 'myFavorites':
+      case 'collection':
+        if (!this.state.user) {
+          return null;
+        } else if (this.state.user.userCollection.length === 0) {
           return (
-            this.state.numFavorites == "" ?//should test for 0 after componentDidMount
-            <View style={styles.createScanContainer}>
-              <Image style={styles.iconSize} source={require('../assets/heart.png')}/>
-              <Text style={styles.textSize}>View Your Favorites!</Text>
-              <Text>Once you favorite photos from your collection,</Text>
-              <Text>you'll find them here</Text>
+            <View style={styles.createCollectionContainer}>
+              <Image style={styles.iconSize} source={require('../assets/addtocollection.png')}/>
+              <Text style={styles.textSize}>Create Your Collection</Text>
+              <Text style={{ alignSelf: 'center' }}>Tap the add icon when you like a piece of art to save it to your collection.</Text>
             </View>
-
-          :
-
-          /*render all photos in a grid pattern*/
-          <View style={styles.gridContainer}>
-            <BestGrid score = {this.state.numFavorites} header={this.state.favoriteHeader} artworkArray={this.state.markers}/>
-          </View>
-
-          /* render all photos in a grid pattern */
-          )
-      case 'myMap':
-        let markers = this.state.markers;
-        return (<MapView style={{
-            flex: 4
-          }} initialRegion={{
-            latitude: this.state.lat,
-            longitude: this.state.long,
-            latitudeDelta: 40,
-            longitudeDelta: 20
-          }}>
-          {
-            markers.map((marker, index) => (<Marker coordinate={{
-                latitude: parseFloat(marker.lat),
-                longitude: parseFloat(marker.lng)
-              }} key={index} description={this.state.museum} title={marker.museum + ', ' + marker.city}></Marker>))
-          }
-          <Marker coordinate={{
-              latitude: this.state.lat,
-              longitude: this.state.long
-            }} title="Current location" key="user"></Marker>
-        </MapView>);
+          );
+        } else {
+          return (
+            <View style={styles.gridContainer}>
+              <BestGrid collection={this.state.user.userCollection} openModal={this.openModal}/>
+            </View>
+          );
+        }
+      case 'map':
+        const markers = !this.state.user ? [] : this.state.user.userCollection;
+        return (
+          <MapView style={{ flex: 1 }}
+            initialRegion={{ latitude: this.state.userLat, longitude: this.state.userLong, latitudeDelta: 40, longitudeDelta: 20}}
+          >
+            {markers.map((marker, index) =>
+              (<Marker coordinate={{ latitude: parseFloat(marker.lat), longitude: parseFloat(marker.lng) }}
+                key={index} title={marker.title} description={marker.museum + ', ' + marker.city} />
+            ))}
+            <Marker coordinate={{ latitude: this.state.userLat, longitude: this.state.userLong }} title="Current Location" key="user" pinColor="blue" />
+          </MapView>
+        );
       default:
         return null;
     }
   }
 
   render() {
-    return (<View style={styles.mainContainer}>
+    let profileImgSrc;
+    if (!this.state.user.firstName) {
+      profileImgSrc = null;
+    } else {
+      if (Object.keys(profileIcons).includes(this.state.user.firstName)) {
+        profileImgSrc = profileIcons[this.state.user.firstName];
+      } else {
+        profileImgSrc = profileIcons["default"];
+      }
+    }
 
-      <View style={styles.userContainer}>
+    return (
+      <View style={styles.mainContainer}>
         <View style={styles.backgroundContainer}>
           <Image style={styles.background} source={require('../assets/landingBG.jpg')}/>
         </View>
-        <Image style={styles.image} source={!this.state.user
-            ? null
-            : profileIcons[this.state.user]
-              ? profileIcons[this.state.user]
-              : profileIcons["default"]}/>
-        <Text style={styles.userTitle}>{this.state.user}</Text>
+        <View style={styles.userContainer}>
+          <View styles={{ flex: 1, flexDirection: 'column', alignItems: 'center' }}>
+            <Image style={styles.image} source={profileImgSrc} />
+            <Text style={styles.userTitle}>{this.state.user.firstName}</Text>
+          </View>
           <Button
-            onPress={this.handleCamera}
-            justifyContent="start"
-            containerViewStyle={{ marginLeft: 80 }}
-            borderRadius={30}
-            title='Return to Camera'
-            backgroundColor='#4DB6AC'
+            onPress={()=>this.props.navigation.navigate("Camera", { previous: 'Collection' })}
+            borderRadius={30} title='Return to Camera' backgroundColor='#4DB6AC' containerStyle={{ flex: 1 }}
           />
+        </View>
+        <View style={{ flex: 6, backgroundColor: 'white' }}>
+          <View style={{ flex: 1 }}>
+            <ButtonGroup
+              onPress={this.changeMode}
+              selectedIndex={this.state.modeIndex}
+              buttons={['Collection', 'Map']}
+              containerStyle={{ flex: 1 }}
+              buttonStyle={{ backgroundColor: 'white' }}
+              selectedButtonStyle={{ backgroundColor: '#bdbdbd' }}
+            />
+          </View>
+          <View style={{ flex: 9 }}>
+            {this.getModeRender(this.state.mode)}
+          </View>
+        </View>
+        <InformationModalScreen isOpen={this.state.informationModalOpen} onClose={this.closeModal} {...this.state.currentArtwork} />
       </View>
-
-      <View style={styles.scanandcollectionContainer}>
-        <TouchableOpacity onPress={this.toggleCollection.bind(this)}>
-          <Text style={styles.collectionContainer}>My Collection
-          </Text>
-        </TouchableOpacity>
-        <TouchableOpacity onPress={this.toggleScan.bind(this)}>
-          <Text style={styles.scansContainer}>My Favorites</Text>
-        </TouchableOpacity>
-        <TouchableOpacity onPress={this.toggleMap.bind(this)}>
-          <Text style={styles.mapsContainer}>My Map</Text>
-        </TouchableOpacity>
-      </View>
-      {this.getModeRender(this.state.mode)}
-    </View>);
+    );
   }
 }
 
 const styles = StyleSheet.create({
   mainContainer: {
     flex: 1
-  },
-  gridContainer:{
-    justifyContent:"space-around",
-    backgroundColor:iOSColors.grey,
-    flex:4,
-    alignItems: "center",
-  },
-  scanandcollectionContainer:{
-    justifyContent:"space-around",
-    backgroundColor:iOSColors.grey,
-    flex:1,
-    flexDirection: "row",
-    marginTop: 10
-  },
-  textSize: {
-    ...material.titleObject,
-    marginTop: 10,
-    marginBottom: 10
-  },
-  createCollectionContainer: {
-    flex: 4,
-    alignItems: "center"
-  },
-  createGridCollectionContainer: {
-    flex: 4
-  },
-  createScanContainer: {
-    flex: 4,
-    alignItems: "center"
-  },
-  iconSize: {
-    height: 100,
-    width: 100
-  },
-  image: {
-    height: 80,
-    borderRadius: 40,
-    width: 80,
-    marginLeft: 10
-  },
-  collectionContainer: {
-    ...material.titleObject
-  },
-  scansContainer: {
-    ...material.titleObject
-  },
-  mapsContainer: {
-    ...material.titleObject
-  },
-  randoContainer: {
-    flex: 0.5,
-    backgroundColor: "grey",
-    alignItems: "center",
-    justifyContent: "center"
-  },
-  userContainer: {
-    flex: 1,
-    backgroundColor: "grey",
-    flexDirection: "row",
-    alignItems: 'center'
   },
   backgroundContainer: {
     position: 'absolute',
@@ -277,13 +165,51 @@ const styles = StyleSheet.create({
   background: {
     resizeMode: 'cover'
   },
+  userContainer: {
+    flex: 1,
+    flexDirection: "row",
+    justifyContent: "space-evenly",
+    alignItems: "center",
+    paddingTop: 20,
+  },
   userTitle: {
     ...material.titleObject,
     ...systemWeights.light,
     color: iOSColors.white,
-    marginLeft: 10,
-    justifyContent: 'center'
-  }
+    alignSelf: 'center',
+  },
+  image: {
+    width: 80,
+    height: 80,
+    borderRadius: 40,
+  },
+  createCollectionContainer: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+    padding: 40,
+    marginBottom: 40,
+  },
+  iconSize: {
+    height: 100,
+    width: 100
+  },
+  textSize: {
+    ...material.titleObject,
+    marginTop: 10,
+    marginBottom: 10
+  },
+  gridContainer:{
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  randoContainer: {
+    flex: 0.5,
+    backgroundColor: "grey",
+    alignItems: "center",
+    justifyContent: "center"
+  },
 });
 
 export default CollectionScreen;

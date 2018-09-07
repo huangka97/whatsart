@@ -1,69 +1,49 @@
 import React from 'react';
+import { Image, TouchableOpacity, Text } from 'react-native';
 import PhotoGrid from 'react-native-image-grid';
-import axios from 'axios';
-import { StyleSheet, TouchableOpacity, Text, View, Image } from 'react-native';
 
 class BestGrid extends React.Component {
 
-  constructor(props) {
-    super(props);
+  constructor() {
+    super();
     this.state = {
-      items: [],
-      artworkSource:[]
-    }
+      artworks: [],
+    };
   }
-  static navigationOptions = {
-    header: null
-  };
 
   componentDidMount() {
-    // Build an array of 60 photos
-    this.setState({
-      artworkSource:this.props.artworkArray
-    })
-    console.log("HELLO: ",this.state.artworkSource)
-    if(this.state.artworkSource.length > 0){
-    let items = Array.apply(null, Array(this.props.score)).map((v, i) => {
-      return { id: i, src: this.state.artworkSource[i].imgURL }
+    const artworks = Array.apply(null, Array(this.props.collection.length)).map((v, i) => {
+      return { id: i, src: this.props.collection[i].imgURL, info: this.props.collection[i] }
     });
-    this.setState({ items });
-    }
-
+    this.setState({ artworks });
   }
 
-  render() {
-    return(
-      <View><Text>{this.props.header}</Text>
-
-      <PhotoGrid
-        data = { this.state.items }
-        itemsPerRow = { 3 }
-        itemMargin = { 1 }
-        itemPaddingHorizontal={1}
-        renderHeader = { this.renderHeader }
-        renderItem = { this.renderItem }
-      />
-      </View>
-    );
-  }
-
-  renderItem(item, itemSize, itemPaddingHorizontal) {
-    return(
+  renderItem = (item, itemSize, itemPaddingHorizontal) => {
+    return (
       <TouchableOpacity
         key = { item.id }
         style = {{ width: itemSize, height: itemSize, paddingHorizontal: itemPaddingHorizontal }}
-        onPress = { () => {
-          // Do Something
-        }}>
+        onPress = {()=>this.props.openModal(item.info)}>
         <Image
           resizeMode = "cover"
-          style = {{ flex: 1 }}
+          style = {{ flex: 1, borderWidth: 1 }}
           source = {{ uri: item.src }}
         />
       </TouchableOpacity>
     )
   }
 
+  render() {
+    return(
+      <PhotoGrid
+        data = { this.state.artworks }
+        itemsPerRow = { 3 }
+        itemMargin = { 1 }
+        itemPaddingHorizontal= { 1 }
+        renderItem = { this.renderItem }
+      />
+    );
+  }
 }
 
 export default BestGrid;

@@ -26,7 +26,7 @@ class InformationModalScreen extends React.Component {
         <View style={styles.filterContainer}>
           <View style={styles.titleContainer}>
             <Ripple rippleColor="#FFFFFF" rippleContainerBorderRadius={25} rippleOpacity={0.5} onPress={this.closeInformationModal}>
-              <Entypo name="chevron-thin-left" size={30} color="white"/>
+              <Entypo name="chevron-thin-down" size={30} color="white"/>
             </Ripple>
           </View>
           <View style={styles.innerImageContainer}>
@@ -99,7 +99,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'flex-start',
     alignItems: 'center',
-    marginTop: 30,
+    marginTop: 20,
+    marginLeft: 20,
   },
   title: {
     fontSize: 60,

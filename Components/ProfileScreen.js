@@ -131,7 +131,6 @@ const styles=StyleSheet.create({
   background: {
     resizeMode: 'cover'
   },
-
   image:{
     height:120,
     borderRadius:60,
