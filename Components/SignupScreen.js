@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Text, View, Image, TouchableOpacity, StatusBar, Platform } from 'react-native';
+import { StyleSheet, Text, View, Image, TouchableOpacity, KeyboardAvoidingView, StatusBar, Platform } from 'react-native';
 import { TextField } from 'react-native-material-textfield';
 import { Button, Divider } from 'react-native-elements';
 import { Video } from 'expo';
@@ -54,65 +54,68 @@ class SignupScreen extends React.Component {
           isLooping
           style={styles.video}
         />
-        <View style={styles.titleContainer}>
-          <Text style={styles.title}>Sign Up</Text>
-          <Divider style={styles.titleDivider} />
-        </View>
-        <View style={styles.formContainer}>
-          <TextField
-            label='First Name'
-            value={this.state.firstName}
-            onChangeText={(firstName)=>this.setState({ firstName })}
-            textColor="black"
-            baseColor="black"
-            tintColor="rgb(0, 44, 178)"
-          />
-          <TextField
-            label='Last Name'
-            value={this.state.lastName}
-            onChangeText={(lastName)=>this.setState({ lastName })}
-            textColor="black"
-            baseColor="black"
-            tintColor="rgb(0, 44, 178)"
-          />
-          <TextField
-            label='Email'
-            value={this.state.email}
-            onChangeText={(email)=>this.setState({ email })}
-            textColor="black"
-            baseColor="black"
-            tintColor="rgb(0, 44, 178)"
-            autoCapitalize='none'
-          />
-          <TextField
-            label='Password'
-            value={this.state.password}
-            onChangeText={(password)=>this.setState({ password })}
-            textColor="black"
-            baseColor="black"
-            tintColor="rgb(0, 44, 178)"
-            secureTextEntry
-          />
-          <TextField
-            label='Repeat Password'
-            value={this.state.repeatPassword}
-            onChangeText={(repeatPassword)=>this.setState({ repeatPassword })}
-            textColor="black"
-            baseColor="black"
-            tintColor="rgb(0, 44, 178)"
-            secureTextEntry
-          />
-          <Button
-            onPress={this.handleSignup}
-            containerViewStyle={{ marginTop: 20 }}
-            borderRadius={30}
-            title='Sign Up'
-            backgroundColor='#4DB6AC'
-          />
-          <TouchableOpacity onPress={this.props.onCancel}>
-            <Text style={styles.cancelText}>Cancel</Text>
-          </TouchableOpacity>
-        </View>
+        <KeyboardAvoidingView style={{ flex: 1 }} behavior="padding" enabled keyboardVerticalOffset={150}>
+          <View style={styles.titleContainer}>
+            <Text style={styles.title}>Sign Up</Text>
+            <Divider style={styles.titleDivider} />
+          </View>
+          <View style={styles.formContainer}>
+            <TextField
+              label='First Name'
+              value={this.state.firstName}
+              onChangeText={(firstName)=>this.setState({ firstName })}
+              textColor="black"
+              baseColor="black"
+              tintColor="rgb(0, 44, 178)"
+            />
+            <TextField
+              label='Last Name'
+              value={this.state.lastName}
+              onChangeText={(lastName)=>this.setState({ lastName })}
+              textColor="black"
+              baseColor="black"
+              tintColor="rgb(0, 44, 178)"
+            />
+            <TextField
+              label='Email'
+              value={this.state.email}
+              onChangeText={(email)=>this.setState({ email })}
+              textColor="black"
+              baseColor="black"
+              tintColor="rgb(0, 44, 178)"
+              autoCapitalize='none'
+            />
+            <TextField
+              label='Password'
+              value={this.state.password}
+              onChangeText={(password)=>this.setState({ password })}
+              textColor="black"
+              baseColor="black"
+              tintColor="rgb(0, 44, 178)"
+              secureTextEntry
+            />
+            <TextField
+              label='Repeat Password'
+              value={this.state.repeatPassword}
+              onChangeText={(repeatPassword)=>this.setState({ repeatPassword })}
+              textColor="black"
+              baseColor="black"
+              tintColor="rgb(0, 44, 178)"
+              secureTextEntry
+            />
+            <Button
+              onPress={this.handleSignup}
+              containerViewStyle={{ marginTop: 20 }}
+              borderRadius={30}
+              title='Sign Up'
+              backgroundColor='#4DB6AC'
+            />
+            <TouchableOpacity onPress={this.props.onCancel}>
+              <Text style={styles.cancelText}>Cancel</Text>
+            </TouchableOpacity>
+          </View>
+
+        </KeyboardAvoidingView>
       </Modal>
     );
   }

@@ -8,9 +8,6 @@ class CameraScreenPreview extends React.Component {
     header: null
   };
 
-
-
-
   render() {
     const { width, height } = Dimensions.get('window');
     return (

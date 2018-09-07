@@ -34,8 +34,9 @@ class CameraScreen extends React.Component {
 
   frameAnimation = () => {
     return new Promise((resolve, reject) => {
-      this.setState({ cameraFrameVisible: true }, () =>{ this.frame.reset(); this.frame.play(); });
-      setTimeout(()=>resolve('Animation done!'), 450);
+      setTimeout(()=>resolve('Animation done!'), 1000);
+      this.frame.reset();
+      this.frame.play();
     })
   }
 
@@ -96,7 +97,12 @@ class CameraScreen extends React.Component {
       return <View />;
     }
     else if (hasCameraPermission === false) { // Tell User that no Permissions were given
-      return <View style={styles.noAccess}><Text>No access given to camera.</Text></View>;
+      return (
+        <View style={styles.noAccess}>
+          <Image style={styles.iconSize} source={require('../assets/no-camera.png')} />
+          <Text>No access given to camera.</Text>
+        </View>
+      );
     }
     else {
       return ( // Return the Normal Camera Display
@@ -110,7 +116,7 @@ class CameraScreen extends React.Component {
                   <Image style={styles.iconSize} source={require('../assets/guest.png')} />
                 </Ripple>
               </View>
-              <LottieView ref={ref => this.frame = ref} source={require('../assets/focus.json')} speed={2} style={{ width: 800, alignSelf: 'center' }} />
+              <LottieView ref={ref => this.frame = ref} source={require('../assets/focus.json')} duration={1000} style={{ width: 800, alignSelf: 'center' }} />
               <View style={styles.bottomBarContainer}>
                 <Ripple rippleColor="#FFFFFF" rippleContainerBorderRadius={15} onPress={()=>this.props.navigation.navigate("Collection")}>
                   <Image style={styles.iconSize} source={require('../assets/collections.png')} />
@@ -134,6 +140,7 @@ const styles = StyleSheet.create({
   noAccess: {
     flex: 1,
     alignItems: 'center',
+    justifyContent: 'center',
   },
   main: {
     flex: 1,
@@ -152,8 +159,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     paddingBottom: 15,
-    paddingLeft: 10,
-    paddingRight: 10
+    paddingHorizontal: 10,
   },
   iconSize: {
     height: 50,

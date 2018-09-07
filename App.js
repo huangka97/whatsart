@@ -20,7 +20,7 @@ const WhatsArt = createStackNavigator(
     Profile: { screen: ProfileScreen },
   },
   {
-    initialRouteName: 'Login',
+    initialRouteName: 'Landing',
     navigationOptions: {
       headerStyle: {
         backgroundColor: '#1976D2',
