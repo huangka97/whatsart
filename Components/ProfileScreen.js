@@ -87,10 +87,9 @@ class ProfileScreen extends React.Component {
             title='Return to Camera'
             backgroundColor='#4DB6AC'
           />
-
         <View style={styles.profileTextContainer}>
           <Image style={styles.image} source={!this.state.user ? null : profileIcons[this.state.user] ? profileIcons[this.state.user] : profileIcons["default"]}/>
-          <Text style={styles.userTitle}>{this.state.user}</Text>
+          <Text style={styles.profileTitle}>{this.state.user}</Text>
         </View>
         <View style={styles.scoreBoardContainer}>
           <Text style={styles.infoText}>Score: {this.state.score}</Text>
@@ -108,7 +107,7 @@ class ProfileScreen extends React.Component {
         </View>
         <View style={styles.logoutContainer}>
           <Ripple rippleColor="#FFFFFF" rippleContainerBorderRadius={25} rippleOpacity={0.5} onPress={()=>setTimeout(this.logout, 500)}>
-          <Button title='Log Out'/>
+          <Button backgroundColor="#C62828" title='Log Out'/>
           </Ripple>
         </View>
       </View>
@@ -178,7 +177,8 @@ const styles=StyleSheet.create({
   },
   profileTitle:{
     ...material.titleObject,
-    color:iOSColors.black,
+    color: 'black',
+    marginTop: 15,
   }
 
 })
